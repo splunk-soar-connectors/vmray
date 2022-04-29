@@ -1,1 +1,2 @@
 **Unreleased**
+* Fixed the access of optional fields in the report

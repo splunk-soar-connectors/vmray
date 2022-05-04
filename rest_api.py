@@ -158,7 +158,7 @@ class VMRayRESTAPI():
             # send request to server
             result = requests.get("{}/rest/continuation/{}".format(self.server, json_result["continuation_id"]),
                                   headers={"Authorization": "api_key {}".format(self.api_key)},
-                                  verify=self.verify_cert)
+                                  verify=self.verify_cert, timeout=30)
             handle_rest_api_result(result)
 
             # parse result

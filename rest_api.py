@@ -11,7 +11,6 @@ import os.path
 import requests
 import six
 
-
 try:
     import urlparse  # pylint: disable=vmray-wrong-import-order
 except ImportError:

@@ -2,7 +2,6 @@
 #
 # Licensed under Apache 2.0 (https://www.apache.org/licenses/LICENSE-2.0.txt)
 import json
-
 from argparse import FileType
 from typing import Any, BinaryIO, Dict, Iterator, List, Optional, Union
 
@@ -399,8 +398,8 @@ class SummaryV2:
             emails.append(
                 {
                     "ioc": email["is_ioc"],
-                    "sender": email["sender"],
-                    "subject": email["subject"],
+                    "sender": email.get("sender"),
+                    "subject": email.get("subject"),
                 }
             )
 
@@ -453,7 +452,7 @@ class SummaryV2:
         for process in self._resolve_refs(ref_processes):
             processes.append(
                 {
-                    "cmd_line": process["cmd_line"],
+                    "cmd_line": process.get("cmd_line"),
                     "ioc": process["is_ioc"],
                 }
             )
@@ -494,12 +493,22 @@ class SummaryV2:
         for _, extracted_file in self.report["extracted_files"].items():
             file_ = self._resolve_ref(extracted_file["ref_file"])
 
-            for filename in self._resolve_refs(extracted_file["ref_filenames"]):
+            if "ref_filenames" in extracted_file:
+                for filename in self._resolve_refs(extracted_file["ref_filenames"]):
+                    extracted_files.append(
+                        {
+                            "ioc": file_["is_ioc"],
+                            "md5_hash": file_["hash_values"]["md5"],
+                            "norm_filename": filename.get("filename"),
+                            "sha1_hash": file_["hash_values"]["sha1"],
+                            "sha256_hash": file_["hash_values"]["sha256"],
+                        }
+                    )
+            else:
                 extracted_files.append(
                     {
                         "ioc": file_["is_ioc"],
                         "md5_hash": file_["hash_values"]["md5"],
-                        "norm_filename": filename.get("filename"),
                         "sha1_hash": file_["hash_values"]["sha1"],
                         "sha256_hash": file_["hash_values"]["sha256"],
                     }
@@ -532,7 +541,11 @@ class SummaryV2:
 
     def _get_v1_mitre_attack(self) -> Dict[str, Any]:
         mitre_attack = self.report["mitre_attack"]
-        techniques = mitre_attack["v4"]["techniques"]
+        v4_techniques = mitre_attack.get("v4")
+        if not v4_techniques:
+            return {}
+
+        techniques = v4_techniques["techniques"]
 
         v1_techniques = []
         for technique_id, technique in techniques.items():

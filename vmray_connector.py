@@ -5,57 +5,27 @@ import base64
 import os
 import time
 import zipfile
-
 from typing import Any, Dict, List, Tuple, Union
 
 # pylint: disable=import-error
 import phantom.app as phantom
+import phantom.rules as phantom_rules
 from phantom.action_result import ActionResult
 from phantom.base_connector import BaseConnector
 from phantom.vault import Vault
-import phantom.rules as phantom_rules
+
+from rest_api import VMRayRESTAPIError  # pylint: disable=wrong-import-order, import-error
+from rest_cmds import SummaryV2, VMRay  # pylint: disable=wrong-import-order
+from vmray_consts import (ACTION_ID_VMRAY_DETONATE_FILE, ACTION_ID_VMRAY_DETONATE_URL,  # pylint: disable=wrong-import-order
+                          ACTION_ID_VMRAY_GET_FILE, ACTION_ID_VMRAY_GET_INFO, ACTION_ID_VMRAY_GET_REPORT, DEFAULT_TIMEOUT, SAMPLE_TYPE_MAPPING,
+                          VMRAY_DEFAULT_PASSWORD, VMRAY_ERR_ADD_VAULT, VMRAY_ERR_CODE_MSG, VMRAY_ERR_CONNECTIVITY_TEST, VMRAY_ERR_FILE_EXISTS,
+                          VMRAY_ERR_GET_SUBMISSION, VMRAY_ERR_MALFORMED_ZIP, VMRAY_ERR_MSG_UNAVAILABLE, VMRAY_ERR_MULTIPART,
+                          VMRAY_ERR_NO_SUBMISSIONS, VMRAY_ERR_OPEN_ZIP, VMRAY_ERR_REST_API, VMRAY_ERR_SAMPLE_NOT_FOUND,
+                          VMRAY_ERR_SERVER_CONNECTION, VMRAY_ERR_SERVER_RES, VMRAY_ERR_SUBMISSION_NOT_FINISHED, VMRAY_ERR_SUBMIT_FILE,
+                          VMRAY_ERR_UNSUPPORTED_HASH, VMRAY_INVALID_INTEGER_ERR_MSG, VMRAY_JSON_API_KEY, VMRAY_JSON_DISABLE_CERT,
+                          VMRAY_JSON_SERVER, VMRAY_NEGATIVE_INTEGER_ERR_MSG, VMRAY_PARSE_ERR_MSG, VMRAY_SUCC_CONNECTIVITY_TEST)
 
 # pylint: enable=import-error
-
-from vmray_consts import (  # pylint: disable=wrong-import-order
-    ACTION_ID_VMRAY_DETONATE_FILE,
-    ACTION_ID_VMRAY_DETONATE_URL,
-    ACTION_ID_VMRAY_GET_FILE,
-    ACTION_ID_VMRAY_GET_INFO,
-    ACTION_ID_VMRAY_GET_REPORT,
-    DEFAULT_TIMEOUT,
-    SAMPLE_TYPE_MAPPING,
-    VMRAY_DEFAULT_PASSWORD,
-    VMRAY_ERR_ADD_VAULT,
-    VMRAY_ERR_CONNECTIVITY_TEST,
-    VMRAY_ERR_FILE_EXISTS,
-    VMRAY_ERR_GET_SUBMISSION,
-    VMRAY_ERR_MALFORMED_ZIP,
-    VMRAY_ERR_MULTIPART,
-    VMRAY_ERR_NO_SUBMISSIONS,
-    VMRAY_ERR_OPEN_ZIP,
-    VMRAY_ERR_SAMPLE_NOT_FOUND,
-    VMRAY_ERR_SERVER_CONNECTION,
-    VMRAY_ERR_SUBMISSION_NOT_FINISHED,
-    VMRAY_ERR_SUBMIT_FILE,
-    VMRAY_ERR_UNSUPPORTED_HASH,
-    VMRAY_ERR_REST_API,
-    VMRAY_JSON_API_KEY,
-    VMRAY_JSON_DISABLE_CERT,
-    VMRAY_JSON_SERVER,
-    VMRAY_SUCC_CONNECTIVITY_TEST,
-    VMRAY_ERR_CODE_MSG,
-    VMRAY_ERR_MSG_UNAVAILABLE,
-    VMRAY_PARSE_ERR_MSG,
-    VMRAY_ERR_SERVER_RES,
-    VMRAY_NEGATIVE_INTEGER_ERR_MSG,
-    VMRAY_INVALID_INTEGER_ERR_MSG,
-)
-
-from rest_api import (  # pylint: disable=wrong-import-order, import-error
-    VMRayRESTAPIError,
-)
-from rest_cmds import SummaryV2, VMRay  # pylint: disable=wrong-import-order
 
 
 class VMRayConnector(BaseConnector):

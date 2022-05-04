@@ -2,7 +2,7 @@
 # VMRay
 
 Publisher:  VMRay  
-Connector Version: 2\.0\.1  
+Connector Version: 2\.0\.3  
 Product Vendor: VMRay GmbH  
 Product Name: VMRay Platform  
 Product Version Supported (regex): "\.\*"  

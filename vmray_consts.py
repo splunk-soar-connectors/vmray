@@ -2,7 +2,7 @@
 #
 # Licensed under Apache 2.0 (https://www.apache.org/licenses/LICENSE-2.0.txt)
 VMRAY_JSON_SERVER = "vmray_server"
-VMRAY_JSON_API_KEY = "vmray_api_key"
+VMRAY_JSON_API_KEY = "vmray_api_key"  # pragma: allowlist secret
 VMRAY_JSON_DISABLE_CERT = "disable_cert_verification"
 VMRAY_ERR_SERVER_CONNECTION = "Could not connect to server. {}"
 VMRAY_ERR_CONNECTIVITY_TEST = "Connectivity test failed"

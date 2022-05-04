@@ -2,13 +2,25 @@
 # VMRay
 
 Publisher:  VMRay  
-Connector Version: 2\.0\.3  
+Connector Version: 2\.1\.0  
 Product Vendor: VMRay GmbH  
 Product Name: VMRay Platform  
 Product Version Supported (regex): "\.\*"  
-Minimum Product Version: 4\.9\.39220  
+Minimum Product Version: 5\.2\.0  
 
 This app enables you to detonate files and URLs, and perform investigative actions, using the VMRay Platform, thereby giving you automated analysis and advanced threat detection through an agentless hypervisor\-based sandbox
+
+
+## Port Information
+
+The app uses HTTP/HTTPS protocol for communicating with the VMRay Server. Below are the default
+ports used by Splunk SOAR.
+
+| Service Name | Transport Protocol | Port |
+|--------------|--------------------|------|
+| http         | tcp                | 80   |
+| https        | tcp                | 443  |
+
 
 ### Configuration Variables
 The below configuration variables are required for this Connector to operate.  These variables are specified when configuring a VMRay Platform asset in SOAR.

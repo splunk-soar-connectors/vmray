@@ -139,7 +139,8 @@ class VMRayRESTAPI():
         handle_rest_api_result(result)
 
         if raw_data:
-            return result.raw
+            import io
+            return io.BytesIO(result.content)
 
         # parse result
         try:

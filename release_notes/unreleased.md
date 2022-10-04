@@ -1,2 +1,2 @@
 **Unreleased**
-* Remove deprecated field for submissions
+* Remove the deprecated field for the 'detonate file' and 'detonate url' actions

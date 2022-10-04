@@ -2,11 +2,11 @@
 # VMRay
 
 Publisher:  VMRay  
-Connector Version: 2\.2\.0  
+Connector Version: 2\.3\.0  
 Product Vendor: VMRay GmbH  
 Product Name: VMRay Platform  
 Product Version Supported (regex): "\.\*"  
-Minimum Product Version: 5\.3\.3  
+Minimum Product Version: 5\.3\.4  
 
 This app enables you to detonate files and URLs, and perform investigative actions, using the VMRay Platform, thereby giving you automated analysis and advanced threat detection through an agentless hypervisor\-based sandbox
 

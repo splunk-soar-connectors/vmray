@@ -362,7 +362,7 @@ class VMRayConnector(BaseConnector):
 
         self.save_progress("Submitting file %s" % vault_id)
 
-        params = {"reanalyze": True}
+        params = {}
         if param.get("comment"):
             params["comment"] = param.get("comment")
         if param.get("tags"):
@@ -465,7 +465,7 @@ class VMRayConnector(BaseConnector):
 
         self.save_progress("Submitting url %s" % url)
 
-        params = {"reanalyze": True}
+        params = {}
         if param.get("comment"):
             params["comment"] = param.get("comment")
         if param.get("tags"):

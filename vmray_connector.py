@@ -5,7 +5,7 @@ import base64
 import os
 import time
 import zipfile
-from typing import Any, Dict, List, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 # pylint: disable=import-error
 import phantom.app as phantom
@@ -553,7 +553,7 @@ class VMRayConnector(BaseConnector):
 
     def _get_report(
         self, action_result, submission_id: int, timeout: int, iocs_only: bool = True
-    ) -> Union[Tuple[bool, Tuple[str, Exception]]]:
+    ) -> Union[Tuple[bool, Optional[Tuple[str, Optional[Exception]]]], Tuple[bool, Dict[str, Any]]]:
         status, api = self._get_api(action_result)
         if api is None:
             return (status, None)
@@ -604,7 +604,7 @@ class VMRayConnector(BaseConnector):
         try:
             recursive_submission_ids = api.get_child_submissions(submission_id)
         except Exception:  # pylint: disable=broad-except
-            self.save_progess("Failed to fetch recursive submissions")
+            self.save_progress("Failed to fetch recursive submissions")
             recursive_submission_ids = None
 
         return (

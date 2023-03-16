@@ -2,7 +2,7 @@
 # VMRay
 
 Publisher:  VMRay  
-Connector Version: 2\.4\.0  
+Connector Version: 2\.3\.0  
 Product Vendor: VMRay GmbH  
 Product Name: VMRay Platform  
 Product Version Supported (regex): "\.\*"  
@@ -65,15 +65,15 @@ PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 **hash** |  required  | The hash of the file to be downloaded | string |  `hash`  `sha256`  `sha1`  `md5` 
 
 #### Action Output
-DATA PATH | TYPE | CONTAINS
---------- | ---- | --------
-action\_result\.parameter\.hash | string |  `hash`  `md5`  `sha1`  `sha256` 
-action\_result\.data\.\*\.vault\_id | string |  `vault id` 
-action\_result\.status | string | 
-action\_result\.message | string | 
-action\_result\.summary\.vault\_id | string |  `vault id` 
-summary\.total\_objects | numeric | 
-summary\.total\_objects\_successful | numeric |   
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action\_result\.parameter\.hash | string |  `hash`  `md5`  `sha1`  `sha256`  |  
+action\_result\.data\.\*\.vault\_id | string |  `vault id`  |  
+action\_result\.status | string |  |   success  failed 
+action\_result\.message | string |  |  
+action\_result\.summary\.vault\_id | string |  `vault id`  |  
+summary\.total\_objects | numeric |  |   1 
+summary\.total\_objects\_successful | numeric |  |   1   
 
 ## action: 'detonate file'
 Detonate file in the VMRay Platform
@@ -97,95 +97,96 @@ PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 **timeout** |  optional  | Submission timeout, default is 600 seconds | numeric | 
 
 #### Action Output
-DATA PATH | TYPE | CONTAINS
---------- | ---- | --------
-action\_result\.parameter\.tags | string | 
-action\_result\.parameter\.ioc\_only | boolean | 
-action\_result\.parameter\.vault\_id | string |  `vault id` 
-action\_result\.parameter\.type | string | 
-action\_result\.parameter\.jobrules | string | 
-action\_result\.parameter\.comment | string | 
-action\_result\.parameter\.config | string | 
-action\_result\.parameter\.file\_name | string |  `file name` 
-action\_result\.data\.\*\.analysis\.analysis\_analyzer\_id | numeric | 
-action\_result\.data\.\*\.analysis\.analysis\_analyzer\_name | string | 
-action\_result\.data\.\*\.analysis\.analysis\_analyzer\_version | string | 
-action\_result\.data\.\*\.analysis\.analysis\_configuration\_id | numeric | 
-action\_result\.data\.\*\.analysis\.analysis\_configuration\_name | string | 
-action\_result\.data\.\*\.analysis\.analysis\_created | string | 
-action\_result\.data\.\*\.analysis\.analysis\_job\_id | numeric | 
-action\_result\.data\.\*\.analysis\.analysis\_job\_started | string | 
-action\_result\.data\.\*\.analysis\.analysis\_jobrule\_id | numeric | 
-action\_result\.data\.\*\.analysis\.analysis\_jobrule\_sampletype | string | 
-action\_result\.data\.\*\.analysis\.analysis\_prescript\_id | numeric | 
-action\_result\.data\.\*\.analysis\.analysis\_priority | numeric | 
-action\_result\.data\.\*\.analysis\.analysis\_result\_code | numeric | 
-action\_result\.data\.\*\.analysis\.analysis\_result\_str | string | 
-action\_result\.data\.\*\.analysis\.analysis\_sample\_id | numeric |  `vmray sample id` 
-action\_result\.data\.\*\.analysis\.analysis\_sample\_md5 | string |  `md5` 
-action\_result\.data\.\*\.analysis\.analysis\_sample\_sha1 | string |  `sha1` 
-action\_result\.data\.\*\.analysis\.analysis\_sample\_sha256 | string |  `sha256` 
-action\_result\.data\.\*\.analysis\.analysis\_verdict | string | 
-action\_result\.data\.\*\.analysis\.analysis\_size | numeric | 
-action\_result\.data\.\*\.analysis\.analysis\_snapshot\_id | numeric | 
-action\_result\.data\.\*\.analysis\.analysis\_snapshot\_name | string | 
-action\_result\.data\.\*\.analysis\.analysis\_submission\_id | numeric |  `vmray submission id` 
-action\_result\.data\.\*\.analysis\.analysis\_user\_email | string | 
-action\_result\.data\.\*\.analysis\.analysis\_user\_id | numeric | 
-action\_result\.data\.\*\.analysis\.analysis\_vm\_id | numeric | 
-action\_result\.data\.\*\.analysis\.analysis\_vm\_name | string | 
-action\_result\.data\.\*\.analysis\.analysis\_vmhost\_id | numeric | 
-action\_result\.data\.\*\.analysis\.analysis\_vmhost\_name | string | 
-action\_result\.data\.\*\.analysis\.analysis\_vti\_built\_in\_rules\_version | string | 
-action\_result\.data\.\*\.analysis\.analysis\_vti\_custom\_rules\_hash | string | 
-action\_result\.data\.\*\.analysis\.analysis\_vti\_score | numeric | 
-action\_result\.data\.\*\.analysis\.analysis\_webif\_url | string | 
-action\_result\.data\.\*\.analysis\.analysis\_yara\_latest\_ruleset\_date | string | 
-action\_result\.data\.\*\.analysis\.analysis\_yara\_match\_count | numeric | 
-action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_created | string | 
-action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_id | numeric | 
-action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_job\_id | numeric | 
-action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_result\_code | numeric | 
-action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_sample\_id | numeric |  `vmray sample id` 
-action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_sample\_md5 | string |  `md5` 
-action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_sample\_sha1 | string |  `sha1` 
-action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_sample\_sha256 | string |  `sha256` 
-action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_verdict | string | 
-action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_submission\_id | numeric | 
-action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_user\_email | string | 
-action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_user\_id | numeric | 
-action\_result\.data\.\*\.analysis\.summary\.extracted\_files\.\*\.md5\_hash | string |  `md5` 
-action\_result\.data\.\*\.analysis\.summary\.extracted\_files\.\*\.sha1\_hash | string |  `sha1` 
-action\_result\.data\.\*\.analysis\.summary\.extracted\_files\.\*\.sha256\_hash | string |  `sha256` 
-action\_result\.data\.\*\.analysis\.summary\.extracted\_files\.\*\.norm\_filename | string |  `file path` 
-action\_result\.data\.\*\.analysis\.summary\.artifacts\.ips\.\*\.ip\_address | string |  `ip` 
-action\_result\.data\.\*\.analysis\.summary\.artifacts\.urls\.\*\.url | string |  `url` 
-action\_result\.data\.\*\.analysis\.summary\.artifacts\.mutexes\.\*\.mutex\_name | string | 
-action\_result\.data\.\*\.analysis\.summary\.artifacts\.registry\.\*\.reg\_key\_name | string | 
-action\_result\.data\.\*\.analysis\.summary\.artifacts\.files\.\*\.norm\_filename | string |  `file path` 
-action\_result\.data\.\*\.analysis\.summary\.artifacts\.domains\.\*\.domain | string |  `domain` 
-action\_result\.data\.\*\.analysis\.summary\.artifacts\.emails\.\*\.sender | string |  `email` 
-action\_result\.data\.\*\.analysis\.summary\.artifacts\.emails\.\*\.subject | string | 
-action\_result\.data\.\*\.analysis\.summary\.artifacts\.processes\.\*\.cmd\_line | string | 
-action\_result\.data\.\*\.analysis\.summary\.mitre\_attack\.techniques\.\*\.description | string | 
-action\_result\.data\.\*\.analysis\.summary\.mitre\_attack\.techniques\.\*\.id | string | 
-action\_result\.data\.\*\.analysis\.summary\.vti\.vti\_rule\_matches\.\*\.category\_desc | string | 
-action\_result\.data\.\*\.analysis\.summary\.vti\.vti\_rule\_matches\.\*\.rule\_score | numeric | 
-action\_result\.data\.\*\.analysis\.summary\.vti\.vti\_rule\_matches\.\*\.operation\_desc | string | 
-action\_result\.data\.\*\.analysis\.summary\.vti\.vti\_rule\_matches\.\*\.rule\_classifications | string | 
-action\_result\.data\.\*\.analysis\.summary\.vti\.vti\_rule\_matches\.\*\.technique\_desc | string | 
-action\_result\.data\.\*\.analysis\.summary\.vti\.vti\_rule\_matches\.\*\.threat\_names\.\*\.name | string | 
-action\_result\.data\.\*\.analysis\.analysis\_id | numeric |  `vmray analysis id` 
-action\_result\.status | string | 
-action\_result\.message | string | 
-action\_result\.summary\.submission\_id | numeric |  `vmray submission id` 
-action\_result\.summary\.submission\_finished | boolean | 
-action\_result\.summary\.verdict | string | 
-action\_result\.summary\.url | string | 
-action\_result\.summary\.billing\_type | string | 
-action\_result\.summary\.recursive\_submission\_ids\.child\_submission\_ids\.\*\.child\_submission\_id | numeric |  `vmray submission id` 
-summary\.total\_objects | numeric | 
-summary\.total\_objects\_successful | numeric |   
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action\_result\.parameter\.tags | string |  |  
+action\_result\.parameter\.ioc\_only | boolean |  |   False  True 
+action\_result\.parameter\.vault\_id | string |  `vault id`  |  
+action\_result\.parameter\.type | string |  |  
+action\_result\.parameter\.jobrules | string |  |  
+action\_result\.parameter\.timeout | numeric |  |  
+action\_result\.parameter\.comment | string |  |  
+action\_result\.parameter\.config | string |  |  
+action\_result\.parameter\.file\_name | string |  `file name`  |  
+action\_result\.data\.\*\.analysis\.analysis\_analyzer\_id | numeric |  |  
+action\_result\.data\.\*\.analysis\.analysis\_analyzer\_name | string |  |  
+action\_result\.data\.\*\.analysis\.analysis\_analyzer\_version | string |  |  
+action\_result\.data\.\*\.analysis\.analysis\_configuration\_id | numeric |  |  
+action\_result\.data\.\*\.analysis\.analysis\_configuration\_name | string |  |  
+action\_result\.data\.\*\.analysis\.analysis\_created | string |  |  
+action\_result\.data\.\*\.analysis\.analysis\_job\_id | numeric |  |  
+action\_result\.data\.\*\.analysis\.analysis\_job\_started | string |  |  
+action\_result\.data\.\*\.analysis\.analysis\_jobrule\_id | numeric |  |  
+action\_result\.data\.\*\.analysis\.analysis\_jobrule\_sampletype | string |  |  
+action\_result\.data\.\*\.analysis\.analysis\_prescript\_id | numeric |  |  
+action\_result\.data\.\*\.analysis\.analysis\_priority | numeric |  |  
+action\_result\.data\.\*\.analysis\.analysis\_result\_code | numeric |  |  
+action\_result\.data\.\*\.analysis\.analysis\_result\_str | string |  |  
+action\_result\.data\.\*\.analysis\.analysis\_sample\_id | numeric |  `vmray sample id`  |  
+action\_result\.data\.\*\.analysis\.analysis\_sample\_md5 | string |  `md5`  |  
+action\_result\.data\.\*\.analysis\.analysis\_sample\_sha1 | string |  `sha1`  |  
+action\_result\.data\.\*\.analysis\.analysis\_sample\_sha256 | string |  `sha256`  |  
+action\_result\.data\.\*\.analysis\.analysis\_verdict | string |  |  
+action\_result\.data\.\*\.analysis\.analysis\_size | numeric |  |  
+action\_result\.data\.\*\.analysis\.analysis\_snapshot\_id | numeric |  |  
+action\_result\.data\.\*\.analysis\.analysis\_snapshot\_name | string |  |  
+action\_result\.data\.\*\.analysis\.analysis\_submission\_id | numeric |  `vmray submission id`  |  
+action\_result\.data\.\*\.analysis\.analysis\_user\_email | string |  |  
+action\_result\.data\.\*\.analysis\.analysis\_user\_id | numeric |  |  
+action\_result\.data\.\*\.analysis\.analysis\_vm\_id | numeric |  |  
+action\_result\.data\.\*\.analysis\.analysis\_vm\_name | string |  |  
+action\_result\.data\.\*\.analysis\.analysis\_vmhost\_id | numeric |  |  
+action\_result\.data\.\*\.analysis\.analysis\_vmhost\_name | string |  |  
+action\_result\.data\.\*\.analysis\.analysis\_vti\_built\_in\_rules\_version | string |  |  
+action\_result\.data\.\*\.analysis\.analysis\_vti\_custom\_rules\_hash | string |  |  
+action\_result\.data\.\*\.analysis\.analysis\_vti\_score | numeric |  |  
+action\_result\.data\.\*\.analysis\.analysis\_webif\_url | string |  |  
+action\_result\.data\.\*\.analysis\.analysis\_yara\_latest\_ruleset\_date | string |  |  
+action\_result\.data\.\*\.analysis\.analysis\_yara\_match\_count | numeric |  |  
+action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_created | string |  |  
+action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_id | numeric |  |  
+action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_job\_id | numeric |  |  
+action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_result\_code | numeric |  |  
+action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_sample\_id | numeric |  `vmray sample id`  |  
+action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_sample\_md5 | string |  `md5`  |  
+action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_sample\_sha1 | string |  `sha1`  |  
+action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_sample\_sha256 | string |  `sha256`  |  
+action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_verdict | string |  |  
+action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_submission\_id | numeric |  |  
+action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_user\_email | string |  |  
+action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_user\_id | numeric |  |  
+action\_result\.data\.\*\.analysis\.summary\.extracted\_files\.\*\.md5\_hash | string |  `md5`  |  
+action\_result\.data\.\*\.analysis\.summary\.extracted\_files\.\*\.sha1\_hash | string |  `sha1`  |  
+action\_result\.data\.\*\.analysis\.summary\.extracted\_files\.\*\.sha256\_hash | string |  `sha256`  |  
+action\_result\.data\.\*\.analysis\.summary\.extracted\_files\.\*\.norm\_filename | string |  `file path`  |  
+action\_result\.data\.\*\.analysis\.summary\.artifacts\.ips\.\*\.ip\_address | string |  `ip`  |  
+action\_result\.data\.\*\.analysis\.summary\.artifacts\.urls\.\*\.url | string |  `url`  |  
+action\_result\.data\.\*\.analysis\.summary\.artifacts\.mutexes\.\*\.mutex\_name | string |  |  
+action\_result\.data\.\*\.analysis\.summary\.artifacts\.registry\.\*\.reg\_key\_name | string |  |  
+action\_result\.data\.\*\.analysis\.summary\.artifacts\.files\.\*\.norm\_filename | string |  `file path`  |  
+action\_result\.data\.\*\.analysis\.summary\.artifacts\.domains\.\*\.domain | string |  `domain`  |  
+action\_result\.data\.\*\.analysis\.summary\.artifacts\.emails\.\*\.sender | string |  `email`  |  
+action\_result\.data\.\*\.analysis\.summary\.artifacts\.emails\.\*\.subject | string |  |  
+action\_result\.data\.\*\.analysis\.summary\.artifacts\.processes\.\*\.cmd\_line | string |  |  
+action\_result\.data\.\*\.analysis\.summary\.mitre\_attack\.techniques\.\*\.description | string |  |  
+action\_result\.data\.\*\.analysis\.summary\.mitre\_attack\.techniques\.\*\.id | string |  |  
+action\_result\.data\.\*\.analysis\.summary\.vti\.vti\_rule\_matches\.\*\.category\_desc | string |  |  
+action\_result\.data\.\*\.analysis\.summary\.vti\.vti\_rule\_matches\.\*\.rule\_score | numeric |  |  
+action\_result\.data\.\*\.analysis\.summary\.vti\.vti\_rule\_matches\.\*\.operation\_desc | string |  |  
+action\_result\.data\.\*\.analysis\.summary\.vti\.vti\_rule\_matches\.\*\.rule\_classifications | string |  |  
+action\_result\.data\.\*\.analysis\.summary\.vti\.vti\_rule\_matches\.\*\.technique\_desc | string |  |  
+action\_result\.data\.\*\.analysis\.summary\.vti\.vti\_rule\_matches\.\*\.threat\_names\.\*\.name | string |  |  
+action\_result\.data\.\*\.analysis\.analysis\_id | numeric |  `vmray analysis id`  |  
+action\_result\.status | string |  |   success  failed 
+action\_result\.message | string |  |  
+action\_result\.summary\.submission\_id | numeric |  `vmray submission id`  |  
+action\_result\.summary\.submission\_finished | boolean |  |   False  True 
+action\_result\.summary\.verdict | string |  |  
+action\_result\.summary\.url | string |  |  
+action\_result\.summary\.billing\_type | string |  |  
+action\_result\.summary\.recursive\_submission\_ids\.child\_submission\_ids\.\*\.child\_submission\_id | numeric |  `vmray submission id`  |  
+summary\.total\_objects | numeric |  |   1 
+summary\.total\_objects\_successful | numeric |  |   1   
 
 ## action: 'detonate url'
 Detonate a URL in the VMRay Platform
@@ -207,93 +208,94 @@ PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 **timeout** |  optional  | Submission timeout, default is 600 seconds | numeric | 
 
 #### Action Output
-DATA PATH | TYPE | CONTAINS
---------- | ---- | --------
-action\_result\.parameter\.tags | string | 
-action\_result\.parameter\.jobrules | string | 
-action\_result\.parameter\.comment | string | 
-action\_result\.parameter\.config | string | 
-action\_result\.parameter\.url | string |  `url` 
-action\_result\.parameter\.ioc\_only | boolean | 
-action\_result\.data\.\*\.analysis\.analysis\_analyzer\_id | numeric | 
-action\_result\.data\.\*\.analysis\.analysis\_analyzer\_name | string | 
-action\_result\.data\.\*\.analysis\.analysis\_analyzer\_version | string | 
-action\_result\.data\.\*\.analysis\.analysis\_configuration\_id | numeric | 
-action\_result\.data\.\*\.analysis\.analysis\_configuration\_name | string | 
-action\_result\.data\.\*\.analysis\.analysis\_created | string | 
-action\_result\.data\.\*\.analysis\.analysis\_id | numeric |  `vmray analysis id` 
-action\_result\.data\.\*\.analysis\.analysis\_job\_id | numeric | 
-action\_result\.data\.\*\.analysis\.analysis\_job\_started | string | 
-action\_result\.data\.\*\.analysis\.analysis\_jobrule\_id | numeric | 
-action\_result\.data\.\*\.analysis\.analysis\_jobrule\_sampletype | string | 
-action\_result\.data\.\*\.analysis\.analysis\_prescript\_id | numeric | 
-action\_result\.data\.\*\.analysis\.analysis\_priority | numeric | 
-action\_result\.data\.\*\.analysis\.analysis\_result\_code | numeric | 
-action\_result\.data\.\*\.analysis\.analysis\_result\_str | string | 
-action\_result\.data\.\*\.analysis\.analysis\_sample\_id | numeric |  `vmray sample id` 
-action\_result\.data\.\*\.analysis\.analysis\_sample\_md5 | string |  `md5` 
-action\_result\.data\.\*\.analysis\.analysis\_sample\_sha1 | string |  `sha1` 
-action\_result\.data\.\*\.analysis\.analysis\_sample\_sha256 | string |  `sha256` 
-action\_result\.data\.\*\.analysis\.analysis\_verdict | string | 
-action\_result\.data\.\*\.analysis\.analysis\_size | numeric | 
-action\_result\.data\.\*\.analysis\.analysis\_snapshot\_id | numeric | 
-action\_result\.data\.\*\.analysis\.analysis\_snapshot\_name | string | 
-action\_result\.data\.\*\.analysis\.analysis\_submission\_id | numeric |  `vmray submission id` 
-action\_result\.data\.\*\.analysis\.analysis\_user\_email | string | 
-action\_result\.data\.\*\.analysis\.analysis\_user\_id | numeric | 
-action\_result\.data\.\*\.analysis\.analysis\_vm\_id | numeric | 
-action\_result\.data\.\*\.analysis\.analysis\_vm\_name | string | 
-action\_result\.data\.\*\.analysis\.analysis\_vmhost\_id | numeric | 
-action\_result\.data\.\*\.analysis\.analysis\_vmhost\_name | string | 
-action\_result\.data\.\*\.analysis\.analysis\_vti\_built\_in\_rules\_version | string | 
-action\_result\.data\.\*\.analysis\.analysis\_vti\_custom\_rules\_hash | string | 
-action\_result\.data\.\*\.analysis\.analysis\_vti\_score | numeric | 
-action\_result\.data\.\*\.analysis\.analysis\_webif\_url | string | 
-action\_result\.data\.\*\.analysis\.analysis\_yara\_latest\_ruleset\_date | string | 
-action\_result\.data\.\*\.analysis\.analysis\_yara\_match\_count | numeric | 
-action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_created | string | 
-action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_id | numeric | 
-action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_job\_id | numeric | 
-action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_result\_code | numeric | 
-action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_sample\_id | numeric |  `vmray sample id` 
-action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_sample\_md5 | string |  `md5` 
-action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_sample\_sha1 | string |  `sha1` 
-action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_sample\_sha256 | string |  `sha256` 
-action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_verdict | string | 
-action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_submission\_id | numeric | 
-action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_user\_email | string | 
-action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_user\_id | numeric | 
-action\_result\.data\.\*\.analysis\.summary\.extracted\_files\.\*\.md5\_hash | string |  `md5` 
-action\_result\.data\.\*\.analysis\.summary\.extracted\_files\.\*\.sha1\_hash | string |  `hash`  `sha1` 
-action\_result\.data\.\*\.analysis\.summary\.extracted\_files\.\*\.sha256\_hash | string |  `hash`  `sha256` 
-action\_result\.data\.\*\.analysis\.summary\.extracted\_files\.\*\.norm\_filename | string |  `file path` 
-action\_result\.data\.\*\.analysis\.summary\.artifacts\.ips\.\*\.ip\_address | string |  `ip` 
-action\_result\.data\.\*\.analysis\.summary\.artifacts\.urls\.\*\.url | string |  `url` 
-action\_result\.data\.\*\.analysis\.summary\.artifacts\.mutexes\.\*\.mutex\_name | string | 
-action\_result\.data\.\*\.analysis\.summary\.artifacts\.registry\.\*\.reg\_key\_name | string | 
-action\_result\.data\.\*\.analysis\.summary\.artifacts\.files\.\*\.norm\_filename | string |  `file path` 
-action\_result\.data\.\*\.analysis\.summary\.artifacts\.domains\.\*\.domain | string |  `domain` 
-action\_result\.data\.\*\.analysis\.summary\.artifacts\.emails\.\*\.sender | string |  `email` 
-action\_result\.data\.\*\.analysis\.summary\.artifacts\.emails\.\*\.subject | string | 
-action\_result\.data\.\*\.analysis\.summary\.artifacts\.processes\.\*\.cmd\_line | string | 
-action\_result\.data\.\*\.analysis\.summary\.mitre\_attack\.techniques\.\*\.description | string | 
-action\_result\.data\.\*\.analysis\.summary\.mitre\_attack\.techniques\.\*\.id | string | 
-action\_result\.data\.\*\.analysis\.summary\.vti\.vti\_rule\_matches\.\*\.category\_desc | string | 
-action\_result\.data\.\*\.analysis\.summary\.vti\.vti\_rule\_matches\.\*\.rule\_score | numeric | 
-action\_result\.data\.\*\.analysis\.summary\.vti\.vti\_rule\_matches\.\*\.operation\_desc | string | 
-action\_result\.data\.\*\.analysis\.summary\.vti\.vti\_rule\_matches\.\*\.rule\_classifications | string | 
-action\_result\.data\.\*\.analysis\.summary\.vti\.vti\_rule\_matches\.\*\.technique\_desc | string | 
-action\_result\.data\.\*\.analysis\.summary\.vti\.vti\_rule\_matches\.\*\.threat\_names\.\*\.name | string | 
-action\_result\.status | string | 
-action\_result\.message | string | 
-action\_result\.summary\.submission\_id | numeric |  `vmray submission id` 
-action\_result\.summary\.submission\_finished | boolean | 
-action\_result\.summary\.verdict | string | 
-action\_result\.summary\.url | string | 
-action\_result\.summary\.billing\_type | string | 
-action\_result\.summary\.recursive\_submission\_ids\.child\_submission\_ids\.\*\.child\_submission\_id | numeric |  `vmray submission id` 
-summary\.total\_objects | numeric | 
-summary\.total\_objects\_successful | numeric |   
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action\_result\.parameter\.tags | string |  |  
+action\_result\.parameter\.jobrules | string |  |  
+action\_result\.parameter\.timeout | numeric |  |  
+action\_result\.parameter\.comment | string |  |  
+action\_result\.parameter\.config | string |  |  
+action\_result\.parameter\.url | string |  `url`  |  
+action\_result\.parameter\.ioc\_only | boolean |  |   False  True 
+action\_result\.data\.\*\.analysis\.analysis\_analyzer\_id | numeric |  |  
+action\_result\.data\.\*\.analysis\.analysis\_analyzer\_name | string |  |  
+action\_result\.data\.\*\.analysis\.analysis\_analyzer\_version | string |  |  
+action\_result\.data\.\*\.analysis\.analysis\_configuration\_id | numeric |  |  
+action\_result\.data\.\*\.analysis\.analysis\_configuration\_name | string |  |  
+action\_result\.data\.\*\.analysis\.analysis\_created | string |  |  
+action\_result\.data\.\*\.analysis\.analysis\_id | numeric |  `vmray analysis id`  |  
+action\_result\.data\.\*\.analysis\.analysis\_job\_id | numeric |  |  
+action\_result\.data\.\*\.analysis\.analysis\_job\_started | string |  |  
+action\_result\.data\.\*\.analysis\.analysis\_jobrule\_id | numeric |  |  
+action\_result\.data\.\*\.analysis\.analysis\_jobrule\_sampletype | string |  |  
+action\_result\.data\.\*\.analysis\.analysis\_prescript\_id | numeric |  |  
+action\_result\.data\.\*\.analysis\.analysis\_priority | numeric |  |  
+action\_result\.data\.\*\.analysis\.analysis\_result\_code | numeric |  |  
+action\_result\.data\.\*\.analysis\.analysis\_result\_str | string |  |  
+action\_result\.data\.\*\.analysis\.analysis\_sample\_id | numeric |  `vmray sample id`  |  
+action\_result\.data\.\*\.analysis\.analysis\_sample\_md5 | string |  `md5`  |  
+action\_result\.data\.\*\.analysis\.analysis\_sample\_sha1 | string |  `sha1`  |  
+action\_result\.data\.\*\.analysis\.analysis\_sample\_sha256 | string |  `sha256`  |  
+action\_result\.data\.\*\.analysis\.analysis\_verdict | string |  |  
+action\_result\.data\.\*\.analysis\.analysis\_size | numeric |  |  
+action\_result\.data\.\*\.analysis\.analysis\_snapshot\_id | numeric |  |  
+action\_result\.data\.\*\.analysis\.analysis\_snapshot\_name | string |  |  
+action\_result\.data\.\*\.analysis\.analysis\_submission\_id | numeric |  `vmray submission id`  |  
+action\_result\.data\.\*\.analysis\.analysis\_user\_email | string |  |  
+action\_result\.data\.\*\.analysis\.analysis\_user\_id | numeric |  |  
+action\_result\.data\.\*\.analysis\.analysis\_vm\_id | numeric |  |  
+action\_result\.data\.\*\.analysis\.analysis\_vm\_name | string |  |  
+action\_result\.data\.\*\.analysis\.analysis\_vmhost\_id | numeric |  |  
+action\_result\.data\.\*\.analysis\.analysis\_vmhost\_name | string |  |  
+action\_result\.data\.\*\.analysis\.analysis\_vti\_built\_in\_rules\_version | string |  |  
+action\_result\.data\.\*\.analysis\.analysis\_vti\_custom\_rules\_hash | string |  |  
+action\_result\.data\.\*\.analysis\.analysis\_vti\_score | numeric |  |  
+action\_result\.data\.\*\.analysis\.analysis\_webif\_url | string |  |  
+action\_result\.data\.\*\.analysis\.analysis\_yara\_latest\_ruleset\_date | string |  |  
+action\_result\.data\.\*\.analysis\.analysis\_yara\_match\_count | numeric |  |  
+action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_created | string |  |  
+action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_id | numeric |  |  
+action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_job\_id | numeric |  |  
+action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_result\_code | numeric |  |  
+action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_sample\_id | numeric |  `vmray sample id`  |  
+action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_sample\_md5 | string |  `md5`  |  
+action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_sample\_sha1 | string |  `sha1`  |  
+action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_sample\_sha256 | string |  `sha256`  |  
+action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_verdict | string |  |  
+action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_submission\_id | numeric |  |  
+action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_user\_email | string |  |  
+action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_user\_id | numeric |  |  
+action\_result\.data\.\*\.analysis\.summary\.extracted\_files\.\*\.md5\_hash | string |  `md5`  |  
+action\_result\.data\.\*\.analysis\.summary\.extracted\_files\.\*\.sha1\_hash | string |  `hash`  `sha1`  |  
+action\_result\.data\.\*\.analysis\.summary\.extracted\_files\.\*\.sha256\_hash | string |  `hash`  `sha256`  |  
+action\_result\.data\.\*\.analysis\.summary\.extracted\_files\.\*\.norm\_filename | string |  `file path`  |  
+action\_result\.data\.\*\.analysis\.summary\.artifacts\.ips\.\*\.ip\_address | string |  `ip`  |  
+action\_result\.data\.\*\.analysis\.summary\.artifacts\.urls\.\*\.url | string |  `url`  |  
+action\_result\.data\.\*\.analysis\.summary\.artifacts\.mutexes\.\*\.mutex\_name | string |  |  
+action\_result\.data\.\*\.analysis\.summary\.artifacts\.registry\.\*\.reg\_key\_name | string |  |  
+action\_result\.data\.\*\.analysis\.summary\.artifacts\.files\.\*\.norm\_filename | string |  `file path`  |  
+action\_result\.data\.\*\.analysis\.summary\.artifacts\.domains\.\*\.domain | string |  `domain`  |  
+action\_result\.data\.\*\.analysis\.summary\.artifacts\.emails\.\*\.sender | string |  `email`  |  
+action\_result\.data\.\*\.analysis\.summary\.artifacts\.emails\.\*\.subject | string |  |  
+action\_result\.data\.\*\.analysis\.summary\.artifacts\.processes\.\*\.cmd\_line | string |  |  
+action\_result\.data\.\*\.analysis\.summary\.mitre\_attack\.techniques\.\*\.description | string |  |  
+action\_result\.data\.\*\.analysis\.summary\.mitre\_attack\.techniques\.\*\.id | string |  |  
+action\_result\.data\.\*\.analysis\.summary\.vti\.vti\_rule\_matches\.\*\.category\_desc | string |  |  
+action\_result\.data\.\*\.analysis\.summary\.vti\.vti\_rule\_matches\.\*\.rule\_score | numeric |  |  
+action\_result\.data\.\*\.analysis\.summary\.vti\.vti\_rule\_matches\.\*\.operation\_desc | string |  |  
+action\_result\.data\.\*\.analysis\.summary\.vti\.vti\_rule\_matches\.\*\.rule\_classifications | string |  |  
+action\_result\.data\.\*\.analysis\.summary\.vti\.vti\_rule\_matches\.\*\.technique\_desc | string |  |  
+action\_result\.data\.\*\.analysis\.summary\.vti\.vti\_rule\_matches\.\*\.threat\_names\.\*\.name | string |  |  
+action\_result\.status | string |  |   success  failed 
+action\_result\.message | string |  |  
+action\_result\.summary\.submission\_id | numeric |  `vmray submission id`  |  
+action\_result\.summary\.submission\_finished | boolean |  |   False  True 
+action\_result\.summary\.verdict | string |  |  
+action\_result\.summary\.url | string |  |  
+action\_result\.summary\.billing\_type | string |  |  
+action\_result\.summary\.recursive\_submission\_ids\.child\_submission\_ids\.\*\.child\_submission\_id | numeric |  `vmray submission id`  |  
+summary\.total\_objects | numeric |  |   1 
+summary\.total\_objects\_successful | numeric |  |   1   
 
 ## action: 'get report'
 Get the report\(s\) for a submission
@@ -311,89 +313,89 @@ PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 **timeout** |  optional  | Timeout | numeric | 
 
 #### Action Output
-DATA PATH | TYPE | CONTAINS
---------- | ---- | --------
-action\_result\.parameter\.submission\_id | numeric |  `vmray submission id` 
-action\_result\.parameter\.ioc\_only | boolean | 
-action\_result\.parameter\.timeout | numeric | 
-action\_result\.data\.\*\.analysis\.analysis\_analyzer\_id | numeric | 
-action\_result\.data\.\*\.analysis\.analysis\_analyzer\_name | string | 
-action\_result\.data\.\*\.analysis\.analysis\_analyzer\_version | string | 
-action\_result\.data\.\*\.analysis\.analysis\_configuration\_id | numeric | 
-action\_result\.data\.\*\.analysis\.analysis\_configuration\_name | string | 
-action\_result\.data\.\*\.analysis\.analysis\_created | string | 
-action\_result\.data\.\*\.analysis\.analysis\_id | numeric |  `vmray analysis id` 
-action\_result\.data\.\*\.analysis\.analysis\_job\_id | numeric | 
-action\_result\.data\.\*\.analysis\.analysis\_job\_started | string | 
-action\_result\.data\.\*\.analysis\.analysis\_jobrule\_id | numeric | 
-action\_result\.data\.\*\.analysis\.analysis\_jobrule\_sampletype | string | 
-action\_result\.data\.\*\.analysis\.analysis\_prescript\_id | numeric | 
-action\_result\.data\.\*\.analysis\.analysis\_priority | numeric | 
-action\_result\.data\.\*\.analysis\.analysis\_result\_code | numeric | 
-action\_result\.data\.\*\.analysis\.analysis\_result\_str | string | 
-action\_result\.data\.\*\.analysis\.analysis\_sample\_id | numeric |  `vmray sample id` 
-action\_result\.data\.\*\.analysis\.analysis\_sample\_md5 | string |  `md5` 
-action\_result\.data\.\*\.analysis\.analysis\_sample\_sha1 | string |  `sha1` 
-action\_result\.data\.\*\.analysis\.analysis\_sample\_sha256 | string |  `sha256` 
-action\_result\.data\.\*\.analysis\.analysis\_verdict | string | 
-action\_result\.data\.\*\.analysis\.analysis\_size | numeric | 
-action\_result\.data\.\*\.analysis\.analysis\_snapshot\_id | numeric | 
-action\_result\.data\.\*\.analysis\.analysis\_snapshot\_name | string | 
-action\_result\.data\.\*\.analysis\.analysis\_submission\_id | numeric |  `vmray submission id` 
-action\_result\.data\.\*\.analysis\.analysis\_user\_email | string | 
-action\_result\.data\.\*\.analysis\.analysis\_user\_id | numeric | 
-action\_result\.data\.\*\.analysis\.analysis\_vm\_id | numeric | 
-action\_result\.data\.\*\.analysis\.analysis\_vm\_name | string | 
-action\_result\.data\.\*\.analysis\.analysis\_vmhost\_id | numeric | 
-action\_result\.data\.\*\.analysis\.analysis\_vmhost\_name | string | 
-action\_result\.data\.\*\.analysis\.analysis\_vti\_built\_in\_rules\_version | string | 
-action\_result\.data\.\*\.analysis\.analysis\_vti\_custom\_rules\_hash | string | 
-action\_result\.data\.\*\.analysis\.analysis\_vti\_score | numeric | 
-action\_result\.data\.\*\.analysis\.analysis\_webif\_url | string | 
-action\_result\.data\.\*\.analysis\.analysis\_yara\_latest\_ruleset\_date | string | 
-action\_result\.data\.\*\.analysis\.analysis\_yara\_match\_count | numeric | 
-action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_created | string | 
-action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_id | numeric | 
-action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_job\_id | numeric | 
-action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_result\_code | numeric | 
-action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_sample\_id | numeric |  `vmray sample id` 
-action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_sample\_md5 | string |  `md5` 
-action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_sample\_sha1 | string |  `sha1` 
-action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_sample\_sha256 | string |  `sha256` 
-action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_verdict | string | 
-action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_submission\_id | numeric | 
-action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_user\_email | string | 
-action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_user\_id | numeric | 
-action\_result\.data\.\*\.analysis\.summary\.extracted\_files\.\*\.md5\_hash | string |  `md5` 
-action\_result\.data\.\*\.analysis\.summary\.extracted\_files\.\*\.sha1\_hash | string |  `sha1` 
-action\_result\.data\.\*\.analysis\.summary\.extracted\_files\.\*\.sha256\_hash | string |  `sha256` 
-action\_result\.data\.\*\.analysis\.summary\.extracted\_files\.\*\.norm\_filename | string |  `file path` 
-action\_result\.data\.\*\.analysis\.summary\.artifacts\.ips\.\*\.ip\_address | string |  `ip` 
-action\_result\.data\.\*\.analysis\.summary\.artifacts\.urls\.\*\.url | string |  `url` 
-action\_result\.data\.\*\.analysis\.summary\.artifacts\.mutexes\.\*\.mutex\_name | string | 
-action\_result\.data\.\*\.analysis\.summary\.artifacts\.registry\.\*\.reg\_key\_name | string | 
-action\_result\.data\.\*\.analysis\.summary\.artifacts\.files\.\*\.norm\_filename | string |  `file path` 
-action\_result\.data\.\*\.analysis\.summary\.artifacts\.domains\.\*\.domain | string |  `domain` 
-action\_result\.data\.\*\.analysis\.summary\.artifacts\.emails\.\*\.sender | string |  `email` 
-action\_result\.data\.\*\.analysis\.summary\.artifacts\.emails\.\*\.subject | string | 
-action\_result\.data\.\*\.analysis\.summary\.artifacts\.processes\.\*\.cmd\_line | string | 
-action\_result\.data\.\*\.analysis\.summary\.mitre\_attack\.techniques\.\*\.description | string | 
-action\_result\.data\.\*\.analysis\.summary\.mitre\_attack\.techniques\.\*\.id | string | 
-action\_result\.data\.\*\.analysis\.summary\.vti\.vti\_rule\_matches\.\*\.category\_desc | string | 
-action\_result\.data\.\*\.analysis\.summary\.vti\.vti\_rule\_matches\.\*\.rule\_score | numeric | 
-action\_result\.data\.\*\.analysis\.summary\.vti\.vti\_rule\_matches\.\*\.operation\_desc | string | 
-action\_result\.data\.\*\.analysis\.summary\.vti\.vti\_rule\_matches\.\*\.rule\_classifications | string | 
-action\_result\.data\.\*\.analysis\.summary\.vti\.vti\_rule\_matches\.\*\.technique\_desc | string | 
-action\_result\.data\.\*\.analysis\.summary\.vti\.vti\_rule\_matches\.\*\.threat\_names\.\*\.name | string | 
-action\_result\.status | string | 
-action\_result\.message | string | 
-action\_result\.summary\.submission\_id | numeric |  `vmray submission id` 
-action\_result\.summary\.verdict | string | 
-action\_result\.summary\.url | numeric | 
-action\_result\.summary\.billing\_type | string | 
-action\_result\.summary\.recursive\_submission\_ids\.child\_submission\_ids\.\*\.child\_submission\_id | numeric |  `vmray submission id` 
-summary\.total\_objects | numeric | 
-summary\.total\_objects\_successful | numeric |   
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action\_result\.parameter\.submission\_id | numeric |  `vmray submission id`  |  
+action\_result\.parameter\.ioc\_only | boolean |  |   False  True 
+action\_result\.parameter\.timeout | numeric |  |  
+action\_result\.data\.\*\.analysis\.analysis\_analyzer\_id | numeric |  |  
+action\_result\.data\.\*\.analysis\.analysis\_analyzer\_name | string |  |  
+action\_result\.data\.\*\.analysis\.analysis\_analyzer\_version | string |  |  
+action\_result\.data\.\*\.analysis\.analysis\_configuration\_id | numeric |  |  
+action\_result\.data\.\*\.analysis\.analysis\_configuration\_name | string |  |  
+action\_result\.data\.\*\.analysis\.analysis\_created | string |  |  
+action\_result\.data\.\*\.analysis\.analysis\_id | numeric |  `vmray analysis id`  |  
+action\_result\.data\.\*\.analysis\.analysis\_job\_id | numeric |  |  
+action\_result\.data\.\*\.analysis\.analysis\_job\_started | string |  |  
+action\_result\.data\.\*\.analysis\.analysis\_jobrule\_id | numeric |  |  
+action\_result\.data\.\*\.analysis\.analysis\_jobrule\_sampletype | string |  |  
+action\_result\.data\.\*\.analysis\.analysis\_prescript\_id | numeric |  |  
+action\_result\.data\.\*\.analysis\.analysis\_priority | numeric |  |  
+action\_result\.data\.\*\.analysis\.analysis\_result\_code | numeric |  |  
+action\_result\.data\.\*\.analysis\.analysis\_result\_str | string |  |  
+action\_result\.data\.\*\.analysis\.analysis\_sample\_id | numeric |  `vmray sample id`  |  
+action\_result\.data\.\*\.analysis\.analysis\_sample\_md5 | string |  `md5`  |  
+action\_result\.data\.\*\.analysis\.analysis\_sample\_sha1 | string |  `sha1`  |  
+action\_result\.data\.\*\.analysis\.analysis\_sample\_sha256 | string |  `sha256`  |  
+action\_result\.data\.\*\.analysis\.analysis\_verdict | string |  |  
+action\_result\.data\.\*\.analysis\.analysis\_size | numeric |  |  
+action\_result\.data\.\*\.analysis\.analysis\_snapshot\_id | numeric |  |  
+action\_result\.data\.\*\.analysis\.analysis\_snapshot\_name | string |  |  
+action\_result\.data\.\*\.analysis\.analysis\_submission\_id | numeric |  `vmray submission id`  |  
+action\_result\.data\.\*\.analysis\.analysis\_user\_email | string |  |  
+action\_result\.data\.\*\.analysis\.analysis\_user\_id | numeric |  |  
+action\_result\.data\.\*\.analysis\.analysis\_vm\_id | numeric |  |  
+action\_result\.data\.\*\.analysis\.analysis\_vm\_name | string |  |  
+action\_result\.data\.\*\.analysis\.analysis\_vmhost\_id | numeric |  |  
+action\_result\.data\.\*\.analysis\.analysis\_vmhost\_name | string |  |  
+action\_result\.data\.\*\.analysis\.analysis\_vti\_built\_in\_rules\_version | string |  |  
+action\_result\.data\.\*\.analysis\.analysis\_vti\_custom\_rules\_hash | string |  |  
+action\_result\.data\.\*\.analysis\.analysis\_vti\_score | numeric |  |  
+action\_result\.data\.\*\.analysis\.analysis\_webif\_url | string |  |  
+action\_result\.data\.\*\.analysis\.analysis\_yara\_latest\_ruleset\_date | string |  |  
+action\_result\.data\.\*\.analysis\.analysis\_yara\_match\_count | numeric |  |  
+action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_created | string |  |  
+action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_id | numeric |  |  
+action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_job\_id | numeric |  |  
+action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_result\_code | numeric |  |  
+action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_sample\_id | numeric |  `vmray sample id`  |  
+action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_sample\_md5 | string |  `md5`  |  
+action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_sample\_sha1 | string |  `sha1`  |  
+action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_sample\_sha256 | string |  `sha256`  |  
+action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_verdict | string |  |  
+action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_submission\_id | numeric |  |  
+action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_user\_email | string |  |  
+action\_result\.data\.\*\.reputation\_lookup\.reputation\_lookup\_user\_id | numeric |  |  
+action\_result\.data\.\*\.analysis\.summary\.extracted\_files\.\*\.md5\_hash | string |  `md5`  |  
+action\_result\.data\.\*\.analysis\.summary\.extracted\_files\.\*\.sha1\_hash | string |  `sha1`  |  
+action\_result\.data\.\*\.analysis\.summary\.extracted\_files\.\*\.sha256\_hash | string |  `sha256`  |  
+action\_result\.data\.\*\.analysis\.summary\.extracted\_files\.\*\.norm\_filename | string |  `file path`  |  
+action\_result\.data\.\*\.analysis\.summary\.artifacts\.ips\.\*\.ip\_address | string |  `ip`  |  
+action\_result\.data\.\*\.analysis\.summary\.artifacts\.urls\.\*\.url | string |  `url`  |  
+action\_result\.data\.\*\.analysis\.summary\.artifacts\.mutexes\.\*\.mutex\_name | string |  |  
+action\_result\.data\.\*\.analysis\.summary\.artifacts\.registry\.\*\.reg\_key\_name | string |  |  
+action\_result\.data\.\*\.analysis\.summary\.artifacts\.files\.\*\.norm\_filename | string |  `file path`  |  
+action\_result\.data\.\*\.analysis\.summary\.artifacts\.domains\.\*\.domain | string |  `domain`  |  
+action\_result\.data\.\*\.analysis\.summary\.artifacts\.emails\.\*\.sender | string |  `email`  |  
+action\_result\.data\.\*\.analysis\.summary\.artifacts\.emails\.\*\.subject | string |  |  
+action\_result\.data\.\*\.analysis\.summary\.artifacts\.processes\.\*\.cmd\_line | string |  |  
+action\_result\.data\.\*\.analysis\.summary\.mitre\_attack\.techniques\.\*\.description | string |  |  
+action\_result\.data\.\*\.analysis\.summary\.mitre\_attack\.techniques\.\*\.id | string |  |  
+action\_result\.data\.\*\.analysis\.summary\.vti\.vti\_rule\_matches\.\*\.category\_desc | string |  |  
+action\_result\.data\.\*\.analysis\.summary\.vti\.vti\_rule\_matches\.\*\.rule\_score | numeric |  |  
+action\_result\.data\.\*\.analysis\.summary\.vti\.vti\_rule\_matches\.\*\.operation\_desc | string |  |  
+action\_result\.data\.\*\.analysis\.summary\.vti\.vti\_rule\_matches\.\*\.rule\_classifications | string |  |  
+action\_result\.data\.\*\.analysis\.summary\.vti\.vti\_rule\_matches\.\*\.technique\_desc | string |  |  
+action\_result\.data\.\*\.analysis\.summary\.vti\.vti\_rule\_matches\.\*\.threat\_names\.\*\.name | string |  |  
+action\_result\.status | string |  |   success  failed 
+action\_result\.message | string |  |  
+action\_result\.summary\.submission\_id | numeric |  `vmray submission id`  |  
+action\_result\.summary\.verdict | string |  |  
+action\_result\.summary\.url | numeric |  |  
+action\_result\.summary\.billing\_type | string |  |  
+action\_result\.summary\.recursive\_submission\_ids\.child\_submission\_ids\.\*\.child\_submission\_id | numeric |  `vmray submission id`  |  
+summary\.total\_objects | numeric |  |   1 
+summary\.total\_objects\_successful | numeric |  |   1   
 
 ## action: 'get info'
 Get information of a specific sample
@@ -410,35 +412,35 @@ PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 **timeout** |  optional  | Timeout | numeric | 
 
 #### Action Output
-DATA PATH | TYPE | CONTAINS
---------- | ---- | --------
-action\_result\.parameter\.hash | string |  `hash`  `md5`  `sha1`  `sha256` 
-action\_result\.parameter\.timeout | numeric | 
-action\_result\.data\.\*\.sample\_type | string | 
-action\_result\.data\.\*\.sample\_created | string | 
-action\_result\.data\.\*\.sample\_filename | string |  `file name` 
-action\_result\.data\.\*\.sample\_filesize | numeric | 
-action\_result\.data\.\*\.sample\_highest\_vti\_score | numeric | 
-action\_result\.data\.\*\.sample\_id | numeric |  `vmray sample id` 
-action\_result\.data\.\*\.sample\_is\_multipart | boolean | 
-action\_result\.data\.\*\.sample\_last\_md\_score | numeric | 
-action\_result\.data\.\*\.sample\_last\_vt\_score | numeric | 
-action\_result\.data\.\*\.sample\_md5hash | string |  `md5` 
-action\_result\.data\.\*\.sample\_priority | numeric | 
-action\_result\.data\.\*\.sample\_score | numeric | 
-action\_result\.data\.\*\.sample\_verdict | string | 
-action\_result\.data\.\*\.sample\_sha1hash | string |  `sha1` 
-action\_result\.data\.\*\.sample\_sha256hash | string |  `sha256` 
-action\_result\.data\.\*\.sample\_url | string |  `url` 
-action\_result\.data\.\*\.sample\_vti\_score | numeric | 
-action\_result\.data\.\*\.sample\_webif\_url | string | 
-action\_result\.data\.\*\.sample\_classifications | string | 
-action\_result\.data\.\*\.sample\_threat\_names | string | 
-action\_result\.status | string | 
-action\_result\.message | string | 
-action\_result\.summary\.score | numeric | 
-action\_result\.summary\.verdict | string | 
-action\_result\.summary\.recursive\_sample\_ids\.parent\_sample\_ids\.\*\.parent\_sample\_id | numeric |  `vmray sample id` 
-action\_result\.summary\.recursive\_sample\_ids\.child\_sample\_ids\.\*\.child\_sample\_id | numeric |  `vmray sample id` 
-summary\.total\_objects | numeric | 
-summary\.total\_objects\_successful | numeric | 
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action\_result\.parameter\.hash | string |  `hash`  `md5`  `sha1`  `sha256`  |  
+action\_result\.parameter\.timeout | numeric |  |  
+action\_result\.data\.\*\.sample\_type | string |  |  
+action\_result\.data\.\*\.sample\_created | string |  |  
+action\_result\.data\.\*\.sample\_filename | string |  `file name`  |  
+action\_result\.data\.\*\.sample\_filesize | numeric |  |  
+action\_result\.data\.\*\.sample\_highest\_vti\_score | numeric |  |  
+action\_result\.data\.\*\.sample\_id | numeric |  `vmray sample id`  |  
+action\_result\.data\.\*\.sample\_is\_multipart | boolean |  |   False  True 
+action\_result\.data\.\*\.sample\_last\_md\_score | numeric |  |  
+action\_result\.data\.\*\.sample\_last\_vt\_score | numeric |  |  
+action\_result\.data\.\*\.sample\_md5hash | string |  `md5`  |  
+action\_result\.data\.\*\.sample\_priority | numeric |  |  
+action\_result\.data\.\*\.sample\_score | numeric |  |  
+action\_result\.data\.\*\.sample\_verdict | string |  |  
+action\_result\.data\.\*\.sample\_sha1hash | string |  `sha1`  |  
+action\_result\.data\.\*\.sample\_sha256hash | string |  `sha256`  |  
+action\_result\.data\.\*\.sample\_url | string |  `url`  |  
+action\_result\.data\.\*\.sample\_vti\_score | numeric |  |  
+action\_result\.data\.\*\.sample\_webif\_url | string |  |  
+action\_result\.data\.\*\.sample\_classifications | string |  |  
+action\_result\.data\.\*\.sample\_threat\_names | string |  |  
+action\_result\.status | string |  |   success  failed 
+action\_result\.message | string |  |  
+action\_result\.summary\.score | numeric |  |  
+action\_result\.summary\.verdict | string |  |  
+action\_result\.summary\.recursive\_sample\_ids\.parent\_sample\_ids\.\*\.parent\_sample\_id | numeric |  `vmray sample id`  |  
+action\_result\.summary\.recursive\_sample\_ids\.child\_sample\_ids\.\*\.child\_sample\_id | numeric |  `vmray sample id`  |  
+summary\.total\_objects | numeric |  |   1 
+summary\.total\_objects\_successful | numeric |  |   1 

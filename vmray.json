@@ -12,7 +12,7 @@
     "type": "sandbox",
     "license": "Copyright (c) VMRay GmbH 2017-2022",
     "main_module": "vmray_connector.py",
-    "app_version": "2.3.0",
+    "app_version": "2.4.0",
     "min_phantom_version": "5.3.4",
     "fips_compliant": false,
     "product_vendor": "VMRay GmbH",

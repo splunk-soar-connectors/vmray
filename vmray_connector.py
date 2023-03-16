@@ -411,8 +411,9 @@ class VMRayConnector(BaseConnector):
         submission_finished = True
 
         iocs_only = param.get("ioc_only", True)
+        timeout = param.get("timeout", DEFAULT_TIMEOUT)
         status, report = self._get_report(
-            action_result, submission_id, DEFAULT_TIMEOUT, iocs_only
+            action_result, submission_id, timeout, iocs_only
         )
         if phantom.is_fail(status):
             if report:
@@ -503,8 +504,9 @@ class VMRayConnector(BaseConnector):
         submission_finished = True
 
         iocs_only = param.get("ioc_only", True)
+        timeout = param.get("timeout", DEFAULT_TIMEOUT)
         status, report = self._get_report(
-            action_result, submission_id, DEFAULT_TIMEOUT, iocs_only
+            action_result, submission_id, timeout, iocs_only
         )
         if phantom.is_fail(status):
             if report:

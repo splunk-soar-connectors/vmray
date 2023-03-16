@@ -2,7 +2,7 @@
 # VMRay
 
 Publisher:  VMRay  
-Connector Version: 2\.3\.0  
+Connector Version: 2\.4\.0  
 Product Vendor: VMRay GmbH  
 Product Name: VMRay Platform  
 Product Version Supported (regex): "\.\*"  
@@ -81,7 +81,7 @@ Detonate file in the VMRay Platform
 Type: **generic**  
 Read only: **False**
 
-The <b>file\_name</b> parameter overrides the filename, if none is given the app tries to get the filename from the vaults metadata\. The <b>type</b> overrides the automatic detection of the VMRay Platform\. The <b>config</b> parameter specifies additional configuration options passed to the VMRay Platform \(See user\_config in the REST API documentation\)\. With <b>jobrules</b> you can specify custom jobrule entries \(See jobrule\_enries in the REST API documentation\)\.
+The <b>file\_name</b> parameter overrides the filename, if none is given the app tries to get the filename from the vaults metadata\. The <b>type</b> overrides the automatic detection of the VMRay Platform\. The <b>config</b> parameter specifies additional configuration options passed to the VMRay Platform \(See user\_config in the REST API documentation\)\. With <b>jobrules</b> you can specify custom jobrule entries \(See jobrule\_enries in the REST API documentation\)\. The <b>timeout</b> parameter specifies the time to wait for the submission to be finished before aborting this action \(default is 600 seconds\)\.
 
 #### Action Parameters
 PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
@@ -94,6 +94,7 @@ PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 **type** |  optional  | The sample type | string | 
 **config** |  optional  | Additional configuration | string | 
 **jobrules** |  optional  | Jobrules | string | 
+**timeout** |  optional  | Submission timeout, default is 600 seconds | numeric | 
 
 #### Action Output
 DATA PATH | TYPE | CONTAINS
@@ -203,6 +204,7 @@ PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 **tags** |  optional  | Tags added for this submission | string | 
 **config** |  optional  | Additional configuration | string | 
 **jobrules** |  optional  | Jobrules | string | 
+**timeout** |  optional  | Submission timeout, default is 600 seconds | numeric | 
 
 #### Action Output
 DATA PATH | TYPE | CONTAINS

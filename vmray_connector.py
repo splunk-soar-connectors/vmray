@@ -334,8 +334,12 @@ class VMRayConnector(BaseConnector):
             return status
 
         vault_id = param["vault_id"]
+        file_name = param.get("file_name")
         try:
-            _, _, vault_info = phantom_rules.vault_info(vault_id=vault_id)
+            _, _, vault_info = phantom_rules.vault_info(
+                vault_id=vault_id,
+                file_name=file_name,
+            )
         except Exception:  # pylint: disable=broad-except
             return action_result.set_status(
                 phantom.APP_ERROR,
@@ -343,9 +347,7 @@ class VMRayConnector(BaseConnector):
             )
 
         if len(vault_info) > 1:
-            return action_result.set_status(
-                phantom.APP_ERROR, f"Found multiple files for vault_id {vault_id}"
-            )
+            self.save_progress(f"Found multiple files for vault_id {vault_id}. Using the first one.")
 
         if len(vault_info) == 0:
             return action_result.set_status(
@@ -374,9 +376,9 @@ class VMRayConnector(BaseConnector):
         if param.get("jobrules"):
             params["jobrule_entries"] = param.get("jobrules")
 
-        if param.get("file_name"):
+        if file_name:
             params["sample_filename_b64enc"] = base64.b64encode(
-                param.get("file_name").encode()
+                file_name.encode()
             ).decode()
         elif vault_info.get("name"):
             params["sample_filename_b64enc"] = base64.b64encode(

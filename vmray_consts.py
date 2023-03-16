@@ -35,14 +35,6 @@ ACTION_ID_VMRAY_GET_INFO = "get_info"
 VMRAY_DEFAULT_PASSWORD = b"infected"
 DEFAULT_TIMEOUT = 60 * 10
 
-VMRAY_SEVERITY_NOT_SUSPICIOUS = "not_suspicious"
-VMRAY_SEVERITY_SUSPICIOUS = "suspicious"
-VMRAY_SEVERITY_MALICIOUS = "malicious"
-VMRAY_SEVERITY_BLACKLISTED = "blacklisted"
-VMRAY_SEVERITY_WHITELISTED = "whitelisted"
-VMRAY_SEVERITY_UNKNOWN = "unknown"
-VMRAY_SEVERITY_ERROR = "error"
-
 SAMPLE_TYPE_MAPPING = {
     "Apple Script": "apple script",
     "Archive": "archive",

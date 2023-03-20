@@ -151,7 +151,7 @@ class VMRayConnector(BaseConnector):
     @staticmethod
     def _get_timeout(param: Dict[str, Any]) -> int:
         try:
-            timeout = int(param["timeout"])
+            timeout = int(param.get("timeout", DEFAULT_TIMEOUT))
             if timeout < 0:
                 timeout = DEFAULT_TIMEOUT
         except (KeyError, TypeError, ValueError):
@@ -412,7 +412,7 @@ class VMRayConnector(BaseConnector):
         submission_finished = True
 
         iocs_only = param.get("ioc_only", True)
-        timeout = param.get("timeout", DEFAULT_TIMEOUT)
+        timeout = self._get_timeout(param)
         status, report = self._get_report(
             action_result, submission_id, timeout, iocs_only
         )
@@ -505,7 +505,7 @@ class VMRayConnector(BaseConnector):
         submission_finished = True
 
         iocs_only = param.get("ioc_only", True)
-        timeout = param.get("timeout", DEFAULT_TIMEOUT)
+        timeout = self._get_timeout(param)
         status, report = self._get_report(
             action_result, submission_id, timeout, iocs_only
         )

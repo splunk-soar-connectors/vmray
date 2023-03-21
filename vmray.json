@@ -12,8 +12,8 @@
     "type": "sandbox",
     "license": "Copyright (c) VMRay GmbH 2017-2022",
     "main_module": "vmray_connector.py",
-    "app_version": "2.3.0",
-    "min_phantom_version": "5.3.4",
+    "app_version": "2.4.0",
+    "min_phantom_version": "5.5.0",
     "fips_compliant": false,
     "product_vendor": "VMRay GmbH",
     "product_name": "VMRay Platform",
@@ -140,7 +140,7 @@
         {
             "action": "detonate file",
             "description": "Detonate file in the VMRay Platform",
-            "verbose": "The <b>file_name</b> parameter overrides the filename, if none is given the app tries to get the filename from the vaults metadata. The <b>type</b> overrides the automatic detection of the VMRay Platform. The <b>config</b> parameter specifies additional configuration options passed to the VMRay Platform (See user_config in the REST API documentation). With <b>jobrules</b> you can specify custom jobrule entries (See jobrule_enries in the REST API documentation).",
+            "verbose": "The <b>file_name</b> parameter overrides the filename, if none is given the app tries to get the filename from the vaults metadata. The <b>type</b> overrides the automatic detection of the VMRay Platform. The <b>config</b> parameter specifies additional configuration options passed to the VMRay Platform (See user_config in the REST API documentation). With <b>jobrules</b> you can specify custom jobrule entries (See jobrule_enries in the REST API documentation). The <b>timeout</b> parameter specifies the time to wait for the submission to be finished before aborting this action (default is 600 seconds).",
             "type": "generic",
             "identifier": "detonate_file",
             "read_only": false,
@@ -194,6 +194,11 @@
                     "description": "Jobrules",
                     "data_type": "string",
                     "order": 7
+                },
+                "timeout": {
+                    "description": "Submission timeout, default is 600 seconds",
+                    "data_type": "numeric",
+                    "order": 8
                 }
             },
             "output": [
@@ -223,6 +228,10 @@
                 {
                     "data_path": "action_result.parameter.jobrules",
                     "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.timeout",
+                    "data_type": "numeric"
                 },
                 {
                     "data_path": "action_result.parameter.comment",
@@ -696,6 +705,11 @@
                     "description": "Jobrules",
                     "data_type": "string",
                     "order": 5
+                },
+                "timeout": {
+                    "description": "Submission timeout, default is 600 seconds",
+                    "data_type": "numeric",
+                    "order": 6
                 }
             },
             "output": [
@@ -706,6 +720,10 @@
                 {
                     "data_path": "action_result.parameter.jobrules",
                     "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.timeout",
+                    "data_type": "numeric"
                 },
                 {
                     "data_path": "action_result.parameter.comment",
@@ -1810,7 +1828,7 @@
         "wheel": [
             {
                 "module": "certifi",
-                "input_file": "wheels/py3/certifi-2022.9.24-py3-none-any.whl"
+                "input_file": "wheels/py3/certifi-2022.12.7-py3-none-any.whl"
             },
             {
                 "module": "chardet",

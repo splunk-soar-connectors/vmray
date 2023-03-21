@@ -1,3 +1,1 @@
 **Unreleased**
-* Added handling for vault files with multiple file names
-* Added timeout parameter for the 'detonate file and 'detonate url' actions

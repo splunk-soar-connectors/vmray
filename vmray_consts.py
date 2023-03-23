@@ -17,6 +17,10 @@ VMRAY_ERROR_SUBMIT_FILE = "Could not submit file"
 VMRAY_ERROR_GET_SUBMISSION = "Could not get submission"
 VMRAY_ERROR_SUBMISSION_NOT_FINISHED = "Submission is not finished"
 VMRAY_ERROR_NO_SUBMISSIONS = "Sample has no submissions"
+VMRAY_ERROR_GET_VTIS = "Could not get VTIs"
+VMRAY_ERROR_VTIS_NOT_FINISHED = "VTIs are not finished"
+VMRAY_ERROR_GET_IOCS = "Could not get IOCs"
+VMRAY_ERROR_IOCS_NOT_FINISHED = "IOCs are not finished"
 VMRAY_ERROR_FILE_EXISTS = "File already exists"
 VMRAY_ERROR_REST_API = "REST API Error"
 VMRAY_ERROR_CODE_MSG = "Error code unavailable"
@@ -24,11 +28,15 @@ VMRAY_ERROR_MSG_UNAVAILABLE = "Error message unavailable. Please check the asset
 VMRAY_PARSE_ERROR_MSG = "Unable to parse the error message. Please check the asset configuration and|or action parameters"
 VMRAY_ERROR_SERVER_RES = "Error processing server response. {}"
 VMRAY_INVALID_INTEGER_ERROR_MSG = "Please provide a valid integer value in the {}"
-VMRAY_NEGATIVE_INTEGER_ERROR_MSG = "Please provide a valid non-negative integer value in the {}"
+VMRAY_NEGATIVE_INTEGER_ERROR_MSG = (
+    "Please provide a valid non-negative integer value in the {}"
+)
 
 ACTION_ID_VMRAY_GET_FILE = "get_file"
 ACTION_ID_VMRAY_DETONATE_FILE = "detonate_file"
 ACTION_ID_VMRAY_DETONATE_URL = "detonate_url"
+ACTION_ID_VMRAY_GET_VTIS = "get_vtis"
+ACTION_ID_VMRAY_GET_IOCS = "get_iocs"
 ACTION_ID_VMRAY_GET_REPORT = "get_report"
 ACTION_ID_VMRAY_GET_INFO = "get_info"
 

@@ -16,15 +16,16 @@ from phantom.vault import Vault
 
 from rest_api import VMRayRESTAPIError  # pylint: disable=wrong-import-order, import-error
 from rest_cmds import SummaryV2, VMRay  # pylint: disable=wrong-import-order
-from vmray_consts import (ACTION_ID_VMRAY_DETONATE_FILE, ACTION_ID_VMRAY_DETONATE_URL,  # pylint: disable=wrong-import-order
-                          ACTION_ID_VMRAY_GET_FILE, ACTION_ID_VMRAY_GET_INFO, ACTION_ID_VMRAY_GET_REPORT, DEFAULT_TIMEOUT, SAMPLE_TYPE_MAPPING,
-                          VMRAY_DEFAULT_PASSWORD, VMRAY_ERROR_ADD_VAULT, VMRAY_ERROR_CODE_MSG, VMRAY_ERROR_CONNECTIVITY_TEST,
-                          VMRAY_ERROR_FILE_EXISTS, VMRAY_ERROR_GET_SUBMISSION, VMRAY_ERROR_MALFORMED_ZIP, VMRAY_ERROR_MSG_UNAVAILABLE,
-                          VMRAY_ERROR_MULTIPART, VMRAY_ERROR_NO_SUBMISSIONS, VMRAY_ERROR_OPEN_ZIP, VMRAY_ERROR_REST_API,
-                          VMRAY_ERROR_SAMPLE_NOT_FOUND, VMRAY_ERROR_SERVER_CONNECTION, VMRAY_ERROR_SERVER_RES,
-                          VMRAY_ERROR_SUBMISSION_NOT_FINISHED, VMRAY_ERROR_SUBMIT_FILE, VMRAY_ERROR_UNSUPPORTED_HASH,
-                          VMRAY_INVALID_INTEGER_ERROR_MSG, VMRAY_JSON_API_KEY, VMRAY_JSON_DISABLE_CERT, VMRAY_JSON_SERVER,
-                          VMRAY_NEGATIVE_INTEGER_ERROR_MSG, VMRAY_PARSE_ERROR_MSG, VMRAY_SUCC_CONNECTIVITY_TEST)
+from vmray_consts import ACTION_ID_VMRAY_DETONATE_URL  # pylint: disable=wrong-import-order
+from vmray_consts import (ACTION_ID_VMRAY_DETONATE_FILE, ACTION_ID_VMRAY_GET_FILE, ACTION_ID_VMRAY_GET_INFO, ACTION_ID_VMRAY_GET_IOCS,
+                          ACTION_ID_VMRAY_GET_REPORT, ACTION_ID_VMRAY_GET_VTIS, DEFAULT_TIMEOUT, SAMPLE_TYPE_MAPPING, VMRAY_DEFAULT_PASSWORD,
+                          VMRAY_ERROR_ADD_VAULT, VMRAY_ERROR_CODE_MSG, VMRAY_ERROR_CONNECTIVITY_TEST, VMRAY_ERROR_FILE_EXISTS,
+                          VMRAY_ERROR_GET_IOCS, VMRAY_ERROR_GET_SUBMISSION, VMRAY_ERROR_GET_VTIS, VMRAY_ERROR_IOCS_NOT_FINISHED,
+                          VMRAY_ERROR_MALFORMED_ZIP, VMRAY_ERROR_MSG_UNAVAILABLE, VMRAY_ERROR_MULTIPART, VMRAY_ERROR_NO_SUBMISSIONS,
+                          VMRAY_ERROR_OPEN_ZIP, VMRAY_ERROR_REST_API, VMRAY_ERROR_SAMPLE_NOT_FOUND, VMRAY_ERROR_SERVER_CONNECTION,
+                          VMRAY_ERROR_SERVER_RES, VMRAY_ERROR_SUBMISSION_NOT_FINISHED, VMRAY_ERROR_SUBMIT_FILE, VMRAY_ERROR_UNSUPPORTED_HASH,
+                          VMRAY_ERROR_VTIS_NOT_FINISHED, VMRAY_INVALID_INTEGER_ERROR_MSG, VMRAY_JSON_API_KEY, VMRAY_JSON_DISABLE_CERT,
+                          VMRAY_JSON_SERVER, VMRAY_NEGATIVE_INTEGER_ERROR_MSG, VMRAY_PARSE_ERROR_MSG, VMRAY_SUCC_CONNECTIVITY_TEST)
 
 # pylint: enable=import-error
 
@@ -184,6 +185,44 @@ class VMRayConnector(BaseConnector):
 
         return phantom.APP_SUCCESS, res
 
+    def _iocs_finished_within_timeout(
+        self, api: VMRay, sample_id: int, timeout: int, time_to_wait_min: int = 30
+    ) -> bool:
+        seconds_waited = 0
+
+        while (
+            api.get_sample_iocs(sample_id).get("status", "") != "finished"
+        ):
+            if timeout == 0 or seconds_waited >= timeout:
+                return False
+
+            self.send_progress("IOCs are not finished yet")
+            time_to_wait = min(time_to_wait_min, timeout - seconds_waited)
+            seconds_waited += time_to_wait
+            self.send_progress(f"Waited {seconds_waited}/{timeout} seconds for IOCs")
+            time.sleep(time_to_wait)
+
+        return True
+
+    def _vtis_finished_within_timeout(
+        self, api: VMRay, sample_id: int, timeout: int, time_to_wait_min: int = 30
+    ) -> bool:
+        seconds_waited = 0
+
+        while (
+            api.get_sample_threat_indicators(sample_id).get("status", "") != "finished"
+        ):
+            if timeout == 0 or seconds_waited >= timeout:
+                return False
+
+            self.send_progress("VTIs are not finished yet")
+            time_to_wait = min(time_to_wait_min, timeout - seconds_waited)
+            seconds_waited += time_to_wait
+            self.send_progress(f"Waited {seconds_waited}/{timeout} seconds for VTIs")
+            time.sleep(time_to_wait)
+
+        return True
+
     def _submission_finished_within_timeout(
         self, api: VMRay, submission_id: int, timeout: int
     ) -> bool:
@@ -196,7 +235,7 @@ class VMRayConnector(BaseConnector):
             self.send_progress("Submission is not finished yet")
             time_to_wait = min(30, timeout - seconds_waited)
             seconds_waited += time_to_wait
-            self.send_progress(f"Waited {seconds_waited}/{timeout} seconds")
+            self.send_progress(f"Waited {seconds_waited}/{timeout} seconds for Submission")
             time.sleep(time_to_wait)
 
         return True
@@ -348,7 +387,9 @@ class VMRayConnector(BaseConnector):
             )
 
         if len(vault_info) > 1:
-            self.save_progress(f"Found multiple files for vault_id {vault_id}. Using the first one.")
+            self.save_progress(
+                f"Found multiple files for vault_id {vault_id}. Using the first one."
+            )
 
         if len(vault_info) == 0:
             return action_result.set_status(
@@ -552,22 +593,197 @@ class VMRayConnector(BaseConnector):
 
         return action_result.set_status(phantom.APP_SUCCESS)
 
-    def _get_report(
-        self, action_result, submission_id: int, timeout: int, iocs_only: bool = True
-    ) -> Union[Tuple[bool, Optional[Tuple[str, Optional[Exception]]]], Tuple[bool, Dict[str, Any]]]:
+    def _get_iocs(
+        self, api: VMRay, sample_id: int, timeout: int, all_artifacts: bool = False
+    ) -> Union[
+        Tuple[bool, Optional[Tuple[str, Optional[Exception]]]],
+        Tuple[bool, Dict[str, Any]],
+    ]:
+        try:
+            if not self._iocs_finished_within_timeout(api, sample_id, timeout):
+                return (phantom.APP_ERROR, (VMRAY_ERROR_IOCS_NOT_FINISHED, None))
+        except VMRayRESTAPIError:
+            return (phantom.APP_ERROR, (f"No sample found with ID '{sample_id}'.", None))
+
+        self.save_progress("IOCs are finished")
+
+        iocs: List = {}
+        try:
+            iocs = api.get_sample_iocs(sample_id, all_artifacts=all_artifacts).get(
+                "iocs", {}
+            )
+        except Exception as exc:  # pylint: disable=broad-except
+            return (phantom.APP_ERROR, (VMRAY_ERROR_GET_IOCS, exc))
+
+        return (
+            phantom.APP_SUCCESS,
+            {
+                "iocs": iocs,
+                "sample_id": sample_id,
+            },
+        )
+
+    def _handle_get_iocs(self, param: Dict[str, Any]) -> bool:
+        action_result = self.add_action_result(ActionResult(dict(param)))
+
         status, api = self._get_api(action_result)
         if api is None:
             return (status, None)
 
-        if not self._submission_finished_within_timeout(api, submission_id, timeout):
-            return (phantom.APP_ERROR, (VMRAY_ERROR_SUBMISSION_NOT_FINISHED, None))
+        ret_val, sample_id = self._validate_integer(
+            action_result, param["sample_id"], "'sample_id' action parameter"
+        )
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
+        timeout = self._get_timeout(param)
+        all_artifacts = param.get("all_artifacts", False)
+
+        status, res = self._get_iocs(api, sample_id, timeout, all_artifacts=all_artifacts)
+        if phantom.is_fail(status):
+            if res:
+                error_msg, exc = res
+                action_result.set_status(phantom.APP_ERROR, error_msg, exc)
+            return action_result.get_status()
+        try:
+            iocs = res["iocs"]
+        except KeyError as exc:
+            err = self._get_error_message_from_exception(exc)
+            return action_result.set_status(
+                phantom.APP_ERROR, VMRAY_ERROR_SERVER_RES.format(err)
+            )
+
+        try:
+            sample_info = api.get_sample(sample_id)
+        except Exception as exc:  # pylint: disable=broad-except
+            return action_result.set_status(
+                phantom.APP_ERROR, (VMRAY_ERROR_REST_API, exc)
+            )
+
+        # convert severity to verdict
+        if "sample_verdict" not in sample_info:
+            verdict = SummaryV2.to_verdict(sample_info["sample_severity"])
+            sample_info["sample_verdict"] = verdict
+
+        action_result.add_data({
+            "iocs": iocs,
+            "sample_verdict": sample_info["sample_verdict"]
+        })
+
+        action_result.update_summary({
+            "sample_verdict": sample_info["sample_verdict"],
+            "sample_id": sample_id,
+        })
+
+        return action_result.set_status(phantom.APP_SUCCESS)
+
+    def _get_vtis(
+        self, api: VMRay, sample_id: int, timeout: int
+    ) -> Union[
+        Tuple[bool, Optional[Tuple[str, Optional[Exception]]]],
+        Tuple[bool, Dict[str, Any]],
+    ]:
+        try:
+            if not self._vtis_finished_within_timeout(api, sample_id, timeout):
+                return (phantom.APP_ERROR, (VMRAY_ERROR_VTIS_NOT_FINISHED, None))
+        except VMRayRESTAPIError:
+            return (phantom.APP_ERROR, (f"No sample found with ID '{sample_id}'.", None))
+
+        self.save_progress("VTIs are finished")
+
+        try:
+            vtis = api.get_sample_threat_indicators(sample_id).get(
+                "threat_indicators", []
+            )
+        except Exception as exc:  # pylint: disable=broad-except
+            return (phantom.APP_ERROR, (VMRAY_ERROR_GET_VTIS, exc))
+
+        return (
+            phantom.APP_SUCCESS,
+            {
+                "vtis": vtis,
+                "sample_id": sample_id,
+            },
+        )
+
+    def _handle_get_vtis(self, param: Dict[str, Any]) -> bool:
+        action_result = self.add_action_result(ActionResult(dict(param)))
+
+        status, api = self._get_api(action_result)
+        if api is None:
+            return (status, None)
+
+        ret_val, sample_id = self._validate_integer(
+            action_result, param["sample_id"], "'sample_id' action parameter"
+        )
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
+        timeout = self._get_timeout(param)
+
+        status, res = self._get_vtis(api, sample_id, timeout)
+        if phantom.is_fail(status):
+            if res:
+                error_msg, exc = res
+                action_result.set_status(phantom.APP_ERROR, error_msg, exc)
+            return action_result.get_status()
+        try:
+            vtis = res["vtis"]
+        except Exception as exc:  # pylint: disable=broad-except
+            err = self._get_error_message_from_exception(exc)
+            return action_result.set_status(
+                phantom.APP_ERROR, VMRAY_ERROR_SERVER_RES.format(err)
+            )
+
+        try:
+            sample_info = api.get_sample(sample_id)
+        except Exception as exc:  # pylint: disable=broad-except
+            return action_result.set_status(
+                phantom.APP_ERROR, (VMRAY_ERROR_REST_API, exc)
+            )
+
+        # convert severity to verdict
+        if "sample_verdict" not in sample_info:
+            verdict = SummaryV2.to_verdict(sample_info["sample_severity"])
+            sample_info["sample_verdict"] = verdict
+
+        action_result.add_data({
+            "vtis": vtis,
+            "sample_verdict": sample_info["sample_verdict"]
+        })
+
+        action_result.update_summary({
+            "vtis": vtis,
+        })
+
+        return action_result.set_status(phantom.APP_SUCCESS)
+
+    def _get_report(
+        self, action_result, submission_id: int, timeout: int, iocs_only: bool = True
+    ) -> Union[
+        Tuple[bool, Optional[Tuple[str, Optional[Exception]]]],
+        Tuple[bool, Dict[str, Any]],
+    ]:
+        status, api = self._get_api(action_result)
+        if api is None:
+            return (status, None)
+
+        try:
+            if not self._submission_finished_within_timeout(api, submission_id, timeout):
+                return (phantom.APP_ERROR, (VMRAY_ERROR_SUBMISSION_NOT_FINISHED, None))
+        except VMRayRESTAPIError:
+            return (phantom.APP_ERROR, (f"No submission found with ID '{submission_id}'.", None))
 
         self.save_progress("Submission is finished")
 
+        submission: Dict = {}
+        submission_url: str = ""
+        billing_type: str = ""
+        sample_id: str = ""
+        analyses: List = []
         try:
             submission = api.get_submission(submission_id)
             submission_url = submission["submission_webif_url"]
             billing_type = submission["submission_billing_type"]
+            sample_id = submission["submission_sample_id"]
             self.save_progress("Getting results")
             analyses = api.get_analyses_by_submission_id(submission_id)
         except Exception as exc:  # pylint: disable=broad-except
@@ -575,14 +791,17 @@ class VMRayConnector(BaseConnector):
 
         try:
             for analysis in analyses:
-                # convert serverity to verdict
+                # convert severity to verdict
                 if "analysis_verdict" not in analysis:
                     verdict = SummaryV2.to_verdict(analysis["analysis_severity"])
                     analysis["analysis_verdict"] = verdict
 
+                summary = {}
                 if analysis.get("analysis_result_code", -1) == 1:
                     try:
-                        summary = api.get_report(analysis["analysis_id"], iocs_only)
+                        # Skip verdict only quotas.
+                        if analysis.get("analysis_billing_type") == "analyzer":
+                            summary = api.get_report(analysis["analysis_id"], iocs_only)
                     except VMRayRESTAPIError:
                         continue
 
@@ -597,7 +816,7 @@ class VMRayConnector(BaseConnector):
             reputation_lookup = None
 
         try:
-            verdict = api.get_verdict_by_submission_id(submission_id)
+            verdict = api.get_verdict_by_sample_id(sample_id)
         except Exception:  # pylint: disable=broad-except
             self.save_progress("Failed to fetch verdict")
             verdict = "n/a"
@@ -739,7 +958,7 @@ class VMRayConnector(BaseConnector):
                 phantom.APP_ERROR, (VMRAY_ERROR_REST_API, exc)
             )
 
-        # convert serverity to verdict
+        # convert severity to verdict
         if "sample_verdict" not in sample_info:
             verdict = SummaryV2.to_verdict(sample_info["sample_severity"])
             sample_info["sample_verdict"] = verdict
@@ -771,6 +990,10 @@ class VMRayConnector(BaseConnector):
             ret_val = self._handle_detonate_file(param)
         elif action_id == ACTION_ID_VMRAY_DETONATE_URL:
             ret_val = self._handle_detonate_url(param)
+        elif action_id == ACTION_ID_VMRAY_GET_VTIS:
+            ret_val = self._handle_get_vtis(param)
+        elif action_id == ACTION_ID_VMRAY_GET_IOCS:
+            ret_val = self._handle_get_iocs(param)
         elif action_id == ACTION_ID_VMRAY_GET_REPORT:
             ret_val = self._handle_get_report(param)
         elif action_id == ACTION_ID_VMRAY_GET_INFO:

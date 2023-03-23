@@ -288,6 +288,49 @@ class VMRay(VMRayRESTAPI):
         _params.update(params)
         return self.call("POST", "/rest/sample/submit", params=_params)
 
+    def get_analysis_threat_indicators(self, analysis_id: str) -> Dict:
+        """Get VTIs from an analysis.
+
+        VTI = Threat indicator.
+
+        Args:
+            analysis_id (str):
+
+        Returns:
+            dict: response
+        """
+        suffix = f"/rest/analysis/{analysis_id}/vtis"
+        return self.call("GET", suffix)
+
+    def get_sample_threat_indicators(self, sample_id: str) -> Dict:
+        """Get VTIs from a sample.
+
+        VTI = Threat indicator.
+
+        Args:
+            sample_id (str):
+
+        Returns:
+            dict: response
+        """
+        suffix = f"/rest/sample/{sample_id}/threat_indicators"
+        return self.call("GET", suffix)
+
+    def get_sample_iocs(self, sample_id: str, all_artifacts: bool = False) -> Dict:
+        """Get IOCs from a sample.
+
+        Args:
+            sample_id (str):
+            all_artifacts (bool):
+
+        Returns:
+            dict: response
+        """
+        suffix = f"/rest/sample/{sample_id}/iocs"
+        if all_artifacts:
+            suffix += "?all_artifacts=true"
+        return self.call("GET", suffix)
+
 
 class VMRayParsingError(Exception):
     pass
@@ -524,7 +567,7 @@ class SummaryV2:
         vti_matches = self.report["vti"]["matches"]
         for vti in vti_matches.values():
             threat_names = vti.get("threat_names", [])
-            threat_names = [{"name": name} for name in threat_names]
+            threat_names = [{"name": name} for name in threat_names if name]
 
             vti_rule_matches.append(
                 {
@@ -540,6 +583,9 @@ class SummaryV2:
         return {"vti": {"vti_rule_matches": vti_rule_matches}}
 
     def _get_v1_mitre_attack(self) -> Dict[str, Any]:
+        if "mitre_attack" not in self.report:
+            return {}
+
         mitre_attack = self.report["mitre_attack"]
         v4_techniques = mitre_attack.get("v4")
         if not v4_techniques:

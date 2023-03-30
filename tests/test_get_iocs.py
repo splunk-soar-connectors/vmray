@@ -1,10 +1,8 @@
-from types import SimpleNamespace
-
 import pytest
 
+from tests.data_for_testing import SAMPLE_IOCS_REST_API_RESULT, SAMPLE_IOCS_RESULT
 from vmray_connector import VMRayConnector
 from vmray_consts import VMRAY_ERROR_IOCS_NOT_FINISHED
-from tests.data_for_testing import SAMPLE_IOCS_REST_API_RESULT, SAMPLE_IOCS_RESULT
 
 
 @pytest.mark.parametrize(
@@ -110,6 +108,6 @@ def test_get_iocs(mocker, timed_out):
         SAMPLE_IOCS_RESULT[1]["sample_id"] = SAMPLE_IOCS_RESULT[1]["sample_id"].format(sample_id=sample_id)
         assert result == SAMPLE_IOCS_RESULT
 
-        api_mock.get_sample_iocs.assert_called_once_with(sample_id, all_artifacts = False)
+        api_mock.get_sample_iocs.assert_called_once_with(sample_id, all_artifacts=False)
         vmray_connector._iocs_finished_within_timeout.assert_called_once_with(api_mock, sample_id, timeout)
         vmray_connector.save_progress.assert_called_once_with("IOCs are finished")

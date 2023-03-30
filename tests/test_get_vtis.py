@@ -1,10 +1,8 @@
-from types import SimpleNamespace
-
 import pytest
 
+from tests.data_for_testing import SAMPLE_VTIS_REST_API_RESULT, SAMPLE_VTIS_RESULT
 from vmray_connector import VMRayConnector
 from vmray_consts import VMRAY_ERROR_VTIS_NOT_FINISHED
-from tests.data_for_testing import SAMPLE_VTIS_REST_API_RESULT, SAMPLE_VTIS_RESULT
 
 
 @pytest.mark.parametrize(

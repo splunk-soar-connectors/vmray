@@ -1,7 +1,3 @@
-from types import SimpleNamespace
-
-import pytest
-
 from rest_cmds import VMRay
 from tests.data_for_testing import SAMPLE_VTIS_REST_API_RESULT
 

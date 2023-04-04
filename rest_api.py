@@ -113,7 +113,7 @@ class VMRayRESTAPI:
                         byte_value = filename.encode("utf-8")
                         b64_value = base64.b64encode(byte_value).decode("utf-8")
 
-                        filename = "@param=%s" % b64_key
+                        filename = "@param={}".format(b64_key)
                         req_params[b64_key] = b64_value
                     file_params[key] = (filename, value, "application/octet-stream")
                 else:

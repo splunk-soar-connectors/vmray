@@ -39,7 +39,7 @@ class UnicodeFileType(FileType):
         except UnicodeDecodeError:
             import ast  # pylint: disable=import-outside-toplevel
 
-            sanitized_str = str(ast.literal_eval("u%s" % repr(string)))
+            sanitized_str = str(ast.literal_eval("u{}".format(repr(string))))
         return FileType.__call__(self, sanitized_str)
 
 

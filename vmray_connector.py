@@ -438,7 +438,7 @@ class VMRayConnector(BaseConnector):
         try:
             if res["errors"]:
                 errors = [
-                    err.get("error_msg", "NO_ERROR_MSG_GIVEN") for err in res["errors"]
+                    error.get("error_msg", "NO_ERROR_MSG_GIVEN") for error in res["errors"]
                 ]
                 return action_result.set_status(phantom.APP_ERROR, ";".join(errors))
 
@@ -531,7 +531,7 @@ class VMRayConnector(BaseConnector):
         try:
             if res["errors"]:
                 errors = [
-                    err.get("error_msg", "NO_ERROR_MSG_GIVEN") for err in res["errors"]
+                    error.get("error_msg", "NO_ERROR_MSG_GIVEN") for error in res["errors"]
                 ]
                 return action_result.set_status(phantom.APP_ERROR, ";".join(errors))
 
@@ -647,9 +647,9 @@ class VMRayConnector(BaseConnector):
         try:
             iocs = res["iocs"]
         except KeyError as exc:
-            err = self._get_error_message_from_exception(exc)
+            error = self._get_error_message_from_exception(exc)
             return action_result.set_status(
-                phantom.APP_ERROR, VMRAY_ERROR_SERVER_RES.format(err)
+                phantom.APP_ERROR, VMRAY_ERROR_SERVER_RES.format(error)
             )
 
         try:
@@ -728,9 +728,9 @@ class VMRayConnector(BaseConnector):
         try:
             vtis = res["vtis"]
         except Exception as exc:  # pylint: disable=broad-except
-            err = self._get_error_message_from_exception(exc)
+            error = self._get_error_message_from_exception(exc)
             return action_result.set_status(
-                phantom.APP_ERROR, VMRAY_ERROR_SERVER_RES.format(err)
+                phantom.APP_ERROR, VMRAY_ERROR_SERVER_RES.format(error)
             )
 
         try:

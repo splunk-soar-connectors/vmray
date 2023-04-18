@@ -2,7 +2,7 @@
     "appid": "cfac072d-79fa-406b-a2e1-25a2fd5785c4",
     "name": "VMRay",
     "description": "This app enables you to detonate files and URLs, and perform investigative actions, using the VMRay Platform, thereby giving you automated analysis and advanced threat detection through an agentless hypervisor-based sandbox",
-    "publisher": " VMRay",
+    "publisher": "VMRay",
     "contributors": [
         {
             "name": "Jens Thom"
@@ -10,7 +10,7 @@
     ],
     "package_name": "phantom_vmray",
     "type": "sandbox",
-    "license": "Copyright (c) VMRay GmbH 2017-2022",
+    "license": "Copyright (c) VMRay GmbH 2017-2023",
     "main_module": "vmray_connector.py",
     "app_version": "2.5.0",
     "min_phantom_version": "5.5.0",
@@ -1298,7 +1298,7 @@
                 "type": "table",
                 "width": 3,
                 "height": 5,
-                "title": "VTIs"
+                "title": "IOCs"
             },
             "versions": "EQ(*)"
         },
@@ -1433,7 +1433,7 @@
                 "type": "table",
                 "width": 3,
                 "height": 5,
-                "title": "IOCs"
+                "title": "VTIs"
             },
             "versions": "EQ(*)"
         },

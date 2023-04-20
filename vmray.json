@@ -2,7 +2,7 @@
     "appid": "cfac072d-79fa-406b-a2e1-25a2fd5785c4",
     "name": "VMRay",
     "description": "This app enables you to detonate files and URLs, and perform investigative actions, using the VMRay Platform, thereby giving you automated analysis and advanced threat detection through an agentless hypervisor-based sandbox",
-    "publisher": " VMRay",
+    "publisher": "VMRay",
     "contributors": [
         {
             "name": "Jens Thom"
@@ -10,9 +10,9 @@
     ],
     "package_name": "phantom_vmray",
     "type": "sandbox",
-    "license": "Copyright (c) VMRay GmbH 2017-2022",
+    "license": "Copyright (c) VMRay GmbH 2017-2023",
     "main_module": "vmray_connector.py",
-    "app_version": "2.4.0",
+    "app_version": "2.5.0",
     "min_phantom_version": "5.5.0",
     "fips_compliant": false,
     "product_vendor": "VMRay GmbH",
@@ -665,7 +665,7 @@
         {
             "action": "detonate url",
             "description": "Detonate a URL in the VMRay Platform",
-            "verbose": "See <b>detonate file</b> for a detailed parameter description.",
+            "verbose": "See <b>detonate file</b> for a detailed parameter description. The <b>timeout</b> parameter specifies the time to wait for the submission to be finished before aborting this action (default is 600 seconds).",
             "type": "generic",
             "identifier": "detonate_url",
             "read_only": false,
@@ -1159,6 +1159,281 @@
                 "width": 2,
                 "height": 5,
                 "title": "Detonate URL Details"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "get iocs",
+            "description": "Get the iocs for a sample",
+            "verbose": "This action requires a <b>sample_id</b>. The <b>timeout</b> parameter specifies the time to wait for the vtis to be finished before aborting this action. The <b>timeout</b> is specified in seconds. Zero indicates no wait, hence the action will return immediately. If this option is not set it will default to a ten-minute timeout. The <b>all_artifacts</b> parameter specifies whether to consider all artifacts when retrieving a sample's iocs.",
+            "type": "investigate",
+            "identifier": "get_iocs",
+            "read_only": true,
+            "parameters": {
+                "sample_id": {
+                    "description": "The VMRay Platform sample ID",
+                    "data_type": "numeric",
+                    "contains": [
+                        "vmray sample id"
+                    ],
+                    "primary": true,
+                    "required": true,
+                    "order": 0
+                },
+                "timeout": {
+                    "description": "Timeout",
+                    "data_type": "numeric",
+                    "order": 1
+                },
+                "all_artifacts": {
+                    "description": "All artifacts",
+                    "data_type": "boolean",
+                    "default": false,
+                    "order": 2
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.parameter.sample_id",
+                    "contains": [
+                        "vmray sample id"
+                    ],
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.parameter.timeout",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.parameter.all_artifacts",
+                    "data_type": "boolean"
+                },
+                {
+                    "data_path": "action_result.data.iocs.domains",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.iocs.email_addresses",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.iocs.emails",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.iocs.filenames",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.iocs.files",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.iocs.ips",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.iocs.mutexes",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.iocs.processes",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.iocs.registry",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.iocs.urls",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.sample_verdict",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
+                {
+                    "column_name": "Sample ID",
+                    "column_order": 0,
+                    "contains": [
+                        "vmray sample id"
+                    ],
+                    "data_path": "action_result.parameter.sample_id",
+                    "data_type": "numeric"
+                },
+                {
+                    "column_name": "Verdict",
+                    "column_order": 1,
+                    "data_path": "action_result.summary.sample_verdict",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                }
+            ],
+            "render": {
+                "type": "table",
+                "width": 3,
+                "height": 5,
+                "title": "IOCs"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "get vtis",
+            "description": "Get the vtis for a sample",
+            "verbose": "This action requires a <b>sample_id</b>. The <b>timeout</b> parameter specifies the time to wait for the vtis to be finished before aborting this action. The <b>timeout</b> is specified in seconds. Zero indicates no wait, hence the action will return immediately. If this option is not set it will default to a ten-minute timeout.",
+            "type": "investigate",
+            "identifier": "get_vtis",
+            "read_only": true,
+            "parameters": {
+                "sample_id": {
+                    "description": "The VMRay Platform sample ID",
+                    "data_type": "numeric",
+                    "contains": [
+                        "vmray sample id"
+                    ],
+                    "primary": true,
+                    "required": true,
+                    "order": 0
+                },
+                "timeout": {
+                    "description": "Timeout",
+                    "data_type": "numeric",
+                    "order": 1
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.parameter.sample_id",
+                    "contains": [
+                        "vmray sample id"
+                    ],
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.parameter.timeout",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.vtis.*.analysis_ids",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.vtis.*.category",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.vtis.*.classifications",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.vtis.*.id",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.vtis.*.operation",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.vtis.*.score",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.sample_verdict",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
+                {
+                    "column_name": "Analysis IDs",
+                    "column_order": 0,
+                    "data_path": "action_result.summary.vtis.*.analysis_ids",
+                    "data_type": "numeric"
+                },
+                {
+                    "column_name": "Categories",
+                    "column_order": 1,
+                    "data_path": "action_result.summary.vtis.*.category",
+                    "data_type": "string"
+                },
+                {
+                    "column_name": "Classifications",
+                    "column_order": 2,
+                    "data_path": "action_result.summary.vtis.*.classifications",
+                    "data_type": "string"
+                },
+                {
+                    "column_name": "IDs",
+                    "column_order": 3,
+                    "data_path": "action_result.summary.vtis.*.id",
+                    "data_type": "numeric"
+                },
+                {
+                    "column_name": "Scores",
+                    "column_order": 4,
+                    "data_path": "action_result.summary.vtis.*.score",
+                    "data_type": "numeric"
+                },
+                {
+                    "column_name": "Operations",
+                    "column_order": 5,
+                    "data_path": "action_result.summary.vtis.*.operation",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                }
+            ],
+            "render": {
+                "type": "table",
+                "width": 3,
+                "height": 5,
+                "title": "VTIs"
             },
             "versions": "EQ(*)"
         },

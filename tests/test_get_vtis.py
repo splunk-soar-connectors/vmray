@@ -1,3 +1,8 @@
+# File: test_get_vtis.py
+#
+# Copyright (c) VMRay GmbH 2017-2023
+#
+# Licensed under Apache 2.0 (https://www.apache.org/licenses/LICENSE-2.0.txt)
 import pytest
 
 from tests.data_for_testing import SAMPLE_VTIS_REST_API_RESULT, SAMPLE_VTIS_RESULT

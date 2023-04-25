@@ -1,3 +1,8 @@
+# File: data_for_testing.py
+#
+# Copyright (c) VMRay GmbH 2017-2023
+#
+# Licensed under Apache 2.0 (https://www.apache.org/licenses/LICENSE-2.0.txt)
 SAMPLE_VTIS_REST_API_RESULT = {
     "status": "finished",
     "threat_indicators": [

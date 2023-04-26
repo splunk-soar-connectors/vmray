@@ -1,8 +1,8 @@
 [comment]: # "Auto-generated SOAR connector documentation"
 # VMRay
 
-Publisher:  VMRay  
-Connector Version: 2.4.0  
+Publisher: VMRay  
+Connector Version: 2.5.0  
 Product Vendor: VMRay GmbH  
 Product Name: VMRay Platform  
 Product Version Supported (regex): ".\*"  
@@ -10,7 +10,11 @@ Minimum Product Version: 5.5.0
 
 This app enables you to detonate files and URLs, and perform investigative actions, using the VMRay Platform, thereby giving you automated analysis and advanced threat detection through an agentless hypervisor-based sandbox
 
-
+[comment]: # " File: README.md"
+[comment]: # "  Copyright (c) VMRay GmbH 2017-2023"
+[comment]: # ""
+[comment]: # "  Licensed under Apache 2.0 (https://www.apache.org/licenses/LICENSE-2.0.txt)"
+[comment]: # ""
 ## Port Information
 
 The app uses HTTP/HTTPS protocol for communicating with the VMRay Server. Below are the default
@@ -36,6 +40,8 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 [get file](#action-get-file) - Download a file from the VMRay Platform and add it to the vault  
 [detonate file](#action-detonate-file) - Detonate file in the VMRay Platform  
 [detonate url](#action-detonate-url) - Detonate a URL in the VMRay Platform  
+[get iocs](#action-get-iocs) - Get the iocs for a sample  
+[get vtis](#action-get-vtis) - Get the vtis for a sample  
 [get report](#action-get-report) - Get the report(s) for a submission  
 [get info](#action-get-info) - Get information of a specific sample  
 
@@ -194,7 +200,7 @@ Detonate a URL in the VMRay Platform
 Type: **generic**  
 Read only: **False**
 
-See <b>detonate file</b> for a detailed parameter description.
+See <b>detonate file</b> for a detailed parameter description. The <b>timeout</b> parameter specifies the time to wait for the submission to be finished before aborting this action (default is 600 seconds).
 
 #### Action Parameters
 PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
@@ -294,6 +300,82 @@ action_result.summary.verdict | string |  |
 action_result.summary.url | string |  |  
 action_result.summary.billing_type | string |  |  
 action_result.summary.recursive_submission_ids.child_submission_ids.\*.child_submission_id | numeric |  `vmray submission id`  |  
+summary.total_objects | numeric |  |   1 
+summary.total_objects_successful | numeric |  |   1   
+
+## action: 'get iocs'
+Get the iocs for a sample
+
+Type: **investigate**  
+Read only: **True**
+
+This action requires a <b>sample_id</b>. The <b>timeout</b> parameter specifies the time to wait for the vtis to be finished before aborting this action. The <b>timeout</b> is specified in seconds. Zero indicates no wait, hence the action will return immediately. If this option is not set it will default to a ten-minute timeout. The <b>all_artifacts</b> parameter specifies whether to consider all artifacts when retrieving a sample's iocs.
+
+#### Action Parameters
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**sample_id** |  required  | The VMRay Platform sample ID | numeric |  `vmray sample id` 
+**timeout** |  optional  | Timeout | numeric | 
+**all_artifacts** |  optional  | All artifacts | boolean | 
+
+#### Action Output
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.parameter.sample_id | numeric |  `vmray sample id`  |  
+action_result.parameter.timeout | numeric |  |  
+action_result.parameter.all_artifacts | boolean |  |  
+action_result.data.iocs.domains | string |  |  
+action_result.data.iocs.email_addresses | string |  |  
+action_result.data.iocs.emails | string |  |  
+action_result.data.iocs.filenames | string |  |  
+action_result.data.iocs.files | string |  |  
+action_result.data.iocs.ips | string |  |  
+action_result.data.iocs.mutexes | string |  |  
+action_result.data.iocs.processes | string |  |  
+action_result.data.iocs.registry | string |  |  
+action_result.data.iocs.urls | string |  |  
+action_result.data.sample_verdict | string |  |  
+action_result.status | string |  |   success  failed 
+action_result.message | string |  |  
+action_result.parameter.sample_id | numeric |  `vmray sample id`  |  
+action_result.summary.sample_verdict | string |  |  
+summary.total_objects | numeric |  |   1 
+summary.total_objects_successful | numeric |  |   1   
+
+## action: 'get vtis'
+Get the vtis for a sample
+
+Type: **investigate**  
+Read only: **True**
+
+This action requires a <b>sample_id</b>. The <b>timeout</b> parameter specifies the time to wait for the vtis to be finished before aborting this action. The <b>timeout</b> is specified in seconds. Zero indicates no wait, hence the action will return immediately. If this option is not set it will default to a ten-minute timeout.
+
+#### Action Parameters
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**sample_id** |  required  | The VMRay Platform sample ID | numeric |  `vmray sample id` 
+**timeout** |  optional  | Timeout | numeric | 
+
+#### Action Output
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.parameter.sample_id | numeric |  `vmray sample id`  |  
+action_result.parameter.timeout | numeric |  |  
+action_result.data.vtis.\*.analysis_ids | string |  |  
+action_result.data.vtis.\*.category | string |  |  
+action_result.data.vtis.\*.classifications | string |  |  
+action_result.data.vtis.\*.id | numeric |  |  
+action_result.data.vtis.\*.operation | string |  |  
+action_result.data.vtis.\*.score | numeric |  |  
+action_result.data.sample_verdict | string |  |  
+action_result.status | string |  |   success  failed 
+action_result.message | string |  |  
+action_result.summary.vtis.\*.analysis_ids | numeric |  |  
+action_result.summary.vtis.\*.category | string |  |  
+action_result.summary.vtis.\*.classifications | string |  |  
+action_result.summary.vtis.\*.id | numeric |  |  
+action_result.summary.vtis.\*.score | numeric |  |  
+action_result.summary.vtis.\*.operation | string |  |  
 summary.total_objects | numeric |  |   1 
 summary.total_objects_successful | numeric |  |   1   
 

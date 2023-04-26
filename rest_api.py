@@ -1,5 +1,7 @@
 # File: rest_api.py
 #
+# Copyright (c) VMRay GmbH 2017-2023
+#
 # Licensed under Apache 2.0 (https://www.apache.org/licenses/LICENSE-2.0.txt)
 """Python client library for VMRay REST API"""
 
@@ -10,6 +12,8 @@ import os.path
 
 import requests
 import six
+
+from vmray_version import __VERSION__
 
 try:
     import urlparse  # pylint: disable=vmray-wrong-import-order
@@ -47,10 +51,15 @@ def handle_rest_api_result(result):
         try:
             json_result = result.json()
         except ValueError:
-            raise VMRayRESTAPIError("API returned error {}: {}".format(result.status_code, result.text),
-                                    status_code=result.status_code)
+            raise VMRayRESTAPIError(
+                "API returned error {}: {}".format(result.status_code, result.text),
+                status_code=result.status_code,
+            )
 
-        raise VMRayRESTAPIError(json_result.get("error_msg", "Unknown error"), status_code=result.status_code)
+        raise VMRayRESTAPIError(
+            json_result.get("error_msg", "Unknown error"),
+            status_code=result.status_code,
+        )
 
 
 def _is_string_ascii_encodeable(input):
@@ -67,7 +76,7 @@ def _is_string_ascii_encodeable(input):
         return False
 
 
-class VMRayRESTAPI():
+class VMRayRESTAPI:
     """VMRay REST API class"""
 
     def __init__(self, server, api_key, verify_cert=True):
@@ -95,10 +104,7 @@ class VMRayRESTAPI():
 
         if params is not None:
             for key, value in six.iteritems(params):
-                if isinstance(value, (datetime.date,
-                                      datetime.datetime,
-                                      float,
-                                      int)):
+                if isinstance(value, (datetime.date, datetime.datetime, float, int)):
                     req_params[key] = six.text_type(value)
                 elif isinstance(value, six.string_types):
                     req_params[key] = six.text_type(value)
@@ -109,11 +115,13 @@ class VMRayRESTAPI():
                         byte_value = filename.encode("utf-8")
                         b64_value = base64.b64encode(byte_value).decode("utf-8")
 
-                        filename = "@param=%s" % b64_key
+                        filename = "@param={}".format(b64_key)
                         req_params[b64_key] = b64_value
                     file_params[key] = (filename, value, "application/octet-stream")
                 else:
-                    raise VMRayRESTAPIError("Parameter \"{}\" has unknown type \"{}\"".format(key, type(value)))
+                    raise VMRayRESTAPIError(
+                        'Parameter "{}" has unknown type "{}"'.format(key, type(value))
+                    )
 
         # construct request
         if file_params:
@@ -128,18 +136,26 @@ class VMRayRESTAPI():
         else:
             req_data = None
 
+        headers = {
+            "Authorization": "api_key {}".format(self.api_key),
+            "User-Agent": f"Splunk SOAR/{__VERSION__}",
+        }
+
         # do request
-        result = requests_func(self.server + api_path,
-                            data=req_data,
-                            params=req_params,
-                            headers={"Authorization": "api_key {}".format(self.api_key)},
-                            files=files,
-                            verify=self.verify_cert,
-                            stream=raw_data)
+        result = requests_func(
+            self.server + api_path,
+            data=req_data,
+            params=req_params,
+            headers=headers,
+            files=files,
+            verify=self.verify_cert,
+            stream=raw_data,
+        )
         handle_rest_api_result(result)
 
         if raw_data:
             import io
+
             return io.BytesIO(result.content)
 
         # parse result
@@ -157,9 +173,14 @@ class VMRayRESTAPI():
         # get cached results
         while "continuation_id" in json_result:
             # send request to server
-            result = requests.get("{}/rest/continuation/{}".format(self.server, json_result["continuation_id"]),
-                                  headers={"Authorization": "api_key {}".format(self.api_key)},
-                                  verify=self.verify_cert, timeout=30)
+            result = requests.get(
+                "{}/rest/continuation/{}".format(
+                    self.server, json_result["continuation_id"]
+                ),
+                headers=headers,
+                verify=self.verify_cert,
+                timeout=30,
+            )
             handle_rest_api_result(result)
 
             # parse result

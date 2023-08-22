@@ -12,7 +12,7 @@
     "type": "sandbox",
     "license": "Copyright (c) VMRay GmbH 2017-2023",
     "main_module": "vmray_connector.py",
-    "app_version": "2.5.0",
+    "app_version": "2.6.0",
     "min_phantom_version": "5.5.0",
     "fips_compliant": false,
     "product_vendor": "VMRay GmbH",
@@ -2095,6 +2095,93 @@
                 "width": 4,
                 "height": 5,
                 "title": "Sample Info"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "get screenshots",
+            "description": "Get screenshots from an analysis",
+            "verbose": "This action will download screenshots taken from a specific dynamic analysis identified by <b>analysis_id</b> and store them in the vault. The screenshots are stored with file names like <b>analysis_5_screenshot_2.png</b>. In this example, '5' represents the analysis ID from which the screenshot came, and '2' indicates that it's the third screenshot taken during the analysis, in chronological order.",
+            "type": "investigate",
+            "identifier": "get_screenshots",
+            "read_only": true,
+            "parameters": {
+                "analysis_id": {
+                    "description": "The VMRay Platform analysis ID",
+                    "data_type": "numeric",
+                    "contains": [
+                        "vmray analysis id"
+                    ],
+                    "primary": true,
+                    "required": true,
+                    "order": 0
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.parameter.analysis_id",
+                    "contains": [
+                        "vmray analysis id"
+                    ],
+                    "data_type": "numeric"
+                },
+                {
+                    "column_name": "Filename",
+                    "column_order": 0,
+                    "data_path": "action_result.data.*.file_name",
+                    "data_type": "string",
+                    "example_values": [
+                        "analysis_5_screenshot_2.png"
+                    ]
+                },
+                {
+                    "column_name": "Vault ID",
+                    "column_order": 1,
+                    "data_path": "action_result.data.*.vault_id",
+                    "contains": [
+                        "vault id"
+                    ],
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.summary.downloaded_screenshots",
+                    "data_type": "numeric",
+                    "example_values": [
+                        7
+                    ]
+                },
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                }
+            ],
+            "render": {
+                "type": "table",
+                "width": 2,
+                "height": 5,
+                "title": "Get Screenshot Details"
             },
             "versions": "EQ(*)"
         }

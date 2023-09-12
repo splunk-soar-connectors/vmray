@@ -1,2 +1,2 @@
 **Unreleased**
-* Added action to get screenshots from a dynamic analysis
+* Added the 'create meeting' action to get screenshots from a dynamic analysis to make it consistent

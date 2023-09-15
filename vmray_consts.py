@@ -33,6 +33,8 @@ VMRAY_INVALID_INTEGER_ERROR_MSG = "Please provide a valid integer value in the {
 VMRAY_NEGATIVE_INTEGER_ERROR_MSG = (
     "Please provide a valid non-negative integer value in the {}"
 )
+VMRAY_ERROR_DOWNLOAD_FAILED = "Download of the files failed"
+VMRAY_ERROR_EXTRACTING_SCREENSHOTS = "Extracting screenshots failed"
 
 ACTION_ID_VMRAY_GET_FILE = "get_file"
 ACTION_ID_VMRAY_DETONATE_FILE = "detonate_file"
@@ -41,9 +43,12 @@ ACTION_ID_VMRAY_GET_VTIS = "get_vtis"
 ACTION_ID_VMRAY_GET_IOCS = "get_iocs"
 ACTION_ID_VMRAY_GET_REPORT = "get_report"
 ACTION_ID_VMRAY_GET_INFO = "get_info"
+ACTION_ID_VMRAY_GET_SCREENSHOTS = "get_screenshots"
 
 VMRAY_DEFAULT_PASSWORD = b"infected"
 DEFAULT_TIMEOUT = 60 * 10
+INDEX_LOG_DELIMITER = "|"
+INDEX_LOG_FILE_NAME_POSITION = 3
 
 SAMPLE_TYPE_MAPPING = {
     "Apple Script": "apple script",

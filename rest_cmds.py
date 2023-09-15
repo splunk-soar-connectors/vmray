@@ -202,6 +202,13 @@ class VMRay(VMRayRESTAPI):
 
         return summary
 
+    def get_screenshots(self, analysis_id: int) -> BinaryIO:
+        return self.call(
+            "GET",
+            f"/rest/analysis/{analysis_id}/archive?filenames=screenshots/*",
+            raw_data=True,
+        )
+
     def get_verdict_by_submission_id(self, submission_id: int) -> str:
         submission = self.get_submission(submission_id)
         return self.get_verdict_by_sample_id(submission["submission_sample_id"])

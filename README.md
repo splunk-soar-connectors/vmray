@@ -2,7 +2,7 @@
 # VMRay
 
 Publisher: VMRay  
-Connector Version: 2.5.0  
+Connector Version: 2.6.0  
 Product Vendor: VMRay GmbH  
 Product Name: VMRay Platform  
 Product Version Supported (regex): ".\*"  
@@ -44,6 +44,7 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 [get vtis](#action-get-vtis) - Get the vtis for a sample  
 [get report](#action-get-report) - Get the report(s) for a submission  
 [get info](#action-get-info) - Get information of a specific sample  
+[get screenshots](#action-get-screenshots) - Get screenshots from an analysis  
 
 ## action: 'test connectivity'
 Validate the asset configuration for connectivity
@@ -524,5 +525,30 @@ action_result.summary.score | numeric |  |
 action_result.summary.verdict | string |  |  
 action_result.summary.recursive_sample_ids.parent_sample_ids.\*.parent_sample_id | numeric |  `vmray sample id`  |  
 action_result.summary.recursive_sample_ids.child_sample_ids.\*.child_sample_id | numeric |  `vmray sample id`  |  
+summary.total_objects | numeric |  |   1 
+summary.total_objects_successful | numeric |  |   1   
+
+## action: 'get screenshots'
+Get screenshots from an analysis
+
+Type: **investigate**  
+Read only: **True**
+
+This action will download screenshots taken from a specific dynamic analysis identified by <b>analysis_id</b> and store them in the vault. The screenshots are stored with file names like <b>analysis_5_screenshot_2.png</b>. In this example, '5' represents the analysis ID from which the screenshot came, and '2' indicates that it's the third screenshot taken during the analysis, in chronological order.
+
+#### Action Parameters
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**analysis_id** |  required  | The VMRay Platform analysis ID | numeric |  `vmray analysis id` 
+
+#### Action Output
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.parameter.analysis_id | numeric |  `vmray analysis id`  |  
+action_result.data.\*.file_name | string |  |   analysis_5_screenshot_2.png 
+action_result.data.\*.vault_id | string |  `vault id`  |  
+action_result.summary.downloaded_screenshots | numeric |  |   7 
+action_result.status | string |  |   success  failed 
+action_result.message | string |  |  
 summary.total_objects | numeric |  |   1 
 summary.total_objects_successful | numeric |  |   1 

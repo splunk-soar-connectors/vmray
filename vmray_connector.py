@@ -4,10 +4,11 @@
 #
 # Licensed under Apache 2.0 (https://www.apache.org/licenses/LICENSE-2.0.txt)
 import base64
+import io
 import os
 import time
 import zipfile
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, BinaryIO, Dict, List, Optional, Tuple, Union
 
 # pylint: disable=import-error
 import phantom.app as phantom
@@ -20,14 +21,16 @@ from rest_api import VMRayRESTAPIError  # pylint: disable=wrong-import-order, im
 from rest_cmds import SummaryV2, VMRay  # pylint: disable=wrong-import-order
 from vmray_consts import ACTION_ID_VMRAY_DETONATE_URL  # pylint: disable=wrong-import-order
 from vmray_consts import (ACTION_ID_VMRAY_DETONATE_FILE, ACTION_ID_VMRAY_GET_FILE, ACTION_ID_VMRAY_GET_INFO, ACTION_ID_VMRAY_GET_IOCS,
-                          ACTION_ID_VMRAY_GET_REPORT, ACTION_ID_VMRAY_GET_VTIS, DEFAULT_TIMEOUT, SAMPLE_TYPE_MAPPING, VMRAY_DEFAULT_PASSWORD,
-                          VMRAY_ERROR_ADD_VAULT, VMRAY_ERROR_CODE_MSG, VMRAY_ERROR_CONNECTIVITY_TEST, VMRAY_ERROR_FILE_EXISTS,
-                          VMRAY_ERROR_GET_IOCS, VMRAY_ERROR_GET_SUBMISSION, VMRAY_ERROR_GET_VTIS, VMRAY_ERROR_IOCS_NOT_FINISHED,
-                          VMRAY_ERROR_MALFORMED_ZIP, VMRAY_ERROR_MSG_UNAVAILABLE, VMRAY_ERROR_MULTIPART, VMRAY_ERROR_NO_SUBMISSIONS,
-                          VMRAY_ERROR_OPEN_ZIP, VMRAY_ERROR_REST_API, VMRAY_ERROR_SAMPLE_NOT_FOUND, VMRAY_ERROR_SERVER_CONNECTION,
-                          VMRAY_ERROR_SERVER_RES, VMRAY_ERROR_SUBMISSION_NOT_FINISHED, VMRAY_ERROR_SUBMIT_FILE, VMRAY_ERROR_UNSUPPORTED_HASH,
-                          VMRAY_ERROR_VTIS_NOT_FINISHED, VMRAY_INVALID_INTEGER_ERROR_MSG, VMRAY_JSON_API_KEY, VMRAY_JSON_DISABLE_CERT,
-                          VMRAY_JSON_SERVER, VMRAY_NEGATIVE_INTEGER_ERROR_MSG, VMRAY_PARSE_ERROR_MSG, VMRAY_SUCC_CONNECTIVITY_TEST)
+                          ACTION_ID_VMRAY_GET_REPORT, ACTION_ID_VMRAY_GET_SCREENSHOTS, ACTION_ID_VMRAY_GET_VTIS, DEFAULT_TIMEOUT,
+                          INDEX_LOG_DELIMITER, INDEX_LOG_FILE_NAME_POSITION, SAMPLE_TYPE_MAPPING, VMRAY_DEFAULT_PASSWORD, VMRAY_ERROR_ADD_VAULT,
+                          VMRAY_ERROR_CODE_MSG, VMRAY_ERROR_CONNECTIVITY_TEST, VMRAY_ERROR_DOWNLOAD_FAILED, VMRAY_ERROR_EXTRACTING_SCREENSHOTS,
+                          VMRAY_ERROR_FILE_EXISTS, VMRAY_ERROR_GET_IOCS, VMRAY_ERROR_GET_SUBMISSION, VMRAY_ERROR_GET_VTIS,
+                          VMRAY_ERROR_IOCS_NOT_FINISHED, VMRAY_ERROR_MALFORMED_ZIP, VMRAY_ERROR_MSG_UNAVAILABLE, VMRAY_ERROR_MULTIPART,
+                          VMRAY_ERROR_NO_SUBMISSIONS, VMRAY_ERROR_OPEN_ZIP, VMRAY_ERROR_REST_API, VMRAY_ERROR_SAMPLE_NOT_FOUND,
+                          VMRAY_ERROR_SERVER_CONNECTION, VMRAY_ERROR_SERVER_RES, VMRAY_ERROR_SUBMISSION_NOT_FINISHED, VMRAY_ERROR_SUBMIT_FILE,
+                          VMRAY_ERROR_UNSUPPORTED_HASH, VMRAY_ERROR_VTIS_NOT_FINISHED, VMRAY_INVALID_INTEGER_ERROR_MSG, VMRAY_JSON_API_KEY,
+                          VMRAY_JSON_DISABLE_CERT, VMRAY_JSON_SERVER, VMRAY_NEGATIVE_INTEGER_ERROR_MSG, VMRAY_PARSE_ERROR_MSG,
+                          VMRAY_SUCC_CONNECTIVITY_TEST)
 
 # pylint: enable=import-error
 
@@ -976,6 +979,94 @@ class VMRayConnector(BaseConnector):
 
         return action_result.set_status(phantom.APP_SUCCESS)
 
+    def _get_ordered_screenshot_file_names(
+        self, action_result: "ActionResult", archive: "zipfile.ZipFile"
+    ) -> Tuple[bool, Optional[List[str]]]:
+        """
+        Return a list with screenshot file names ordered by the order they have been taken in during the analysis.
+        """
+        ordered_screenshots = []
+        try:
+            with archive.open("screenshots/index.log") as index_log:
+                for line in io.TextIOWrapper(index_log, "utf-8"):
+                    file_name = line.split(INDEX_LOG_DELIMITER)[INDEX_LOG_FILE_NAME_POSITION].strip()
+                    ordered_screenshots.append(file_name)
+        except Exception as exc:
+            error_message = self._get_error_message_from_exception(exc)
+            return (
+                action_result.set_status(phantom.APP_ERROR, f"{VMRAY_ERROR_EXTRACTING_SCREENSHOTS}. {error_message}"),
+                None
+            )
+        return phantom.APP_SUCCESS, ordered_screenshots
+
+    def _convert_to_vault_file_name(self, file_name: str, analysis_id: int, index: int) -> str:
+        """
+        Converts the file name from the internal format to the format we want to show in the vault.
+        Example:
+            analysis_2_screenshot_3.png
+            The above is a screenshot from an analysis with the ID 2. It is the 4th screenshot that has been taken
+            during that analysis.
+        """
+        return f"analysis_{analysis_id}_screenshot_{index}{os.path.splitext(file_name)[1]}"
+
+    def _download_screenshots(self, action_result: "ActionResult", analysis_id: int) -> Tuple[bool, Optional[BinaryIO]]:
+        status, api = self._get_api(action_result)
+        if api is None:
+            return status, None
+        try:
+            screenshots_zip_file = api.get_screenshots(analysis_id)
+        except Exception as exc:  # pylint: disable=broad-except
+            error_message = self._get_error_message_from_exception(exc)
+            return action_result.set_status(phantom.APP_ERROR, f"{VMRAY_ERROR_DOWNLOAD_FAILED}. {error_message}"), None
+        return phantom.APP_SUCCESS, screenshots_zip_file
+
+    def _add_screenshots_to_vault(
+        self, action_result: "ActionResult", screenshots_zip_file: BinaryIO, analysis_id: int
+    ) -> bool:
+        try:
+            with zipfile.ZipFile(screenshots_zip_file) as screenshots_archive:
+                ret_val, ordered_screenshots = self._get_ordered_screenshot_file_names(
+                    action_result,
+                    screenshots_archive
+                )
+                if phantom.is_fail(ret_val):
+                    return action_result.get_status()
+                for index, file_name in enumerate(ordered_screenshots):
+                    screenshot_data = screenshots_archive.read(os.path.join("screenshots", file_name))
+                    vault_file_name = self._convert_to_vault_file_name(file_name, analysis_id, index)
+                    resp = Vault.create_attachment(screenshot_data, self.get_container_id(), file_name=vault_file_name)
+                    action_result.add_data({"vault_id": resp.get("vault_id"), "file_name": vault_file_name})
+                action_result.update_summary({"downloaded_screenshots": len(ordered_screenshots)})
+        except Exception as exc:
+            error_message = self._get_error_message_from_exception(exc)
+            return action_result.set_status(
+                phantom.APP_ERROR, f"{VMRAY_ERROR_EXTRACTING_SCREENSHOTS}. {error_message}"
+            )
+        return phantom.APP_SUCCESS
+
+    def _handle_get_screenshots(self, param: Dict[str, Any]) -> bool:
+        action_result = self.add_action_result(ActionResult(dict(param)))
+
+        ret_val, analysis_id = self._validate_integer(
+            action_result, param["analysis_id"], "'analysis_id' action parameter"
+        )
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
+
+        self.save_progress("Downloading screenshots")
+        ret_val, screenshots_zip_file = self._download_screenshots(action_result, analysis_id)
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
+
+        self.save_progress("Extracting screenshots and adding them to the vault")
+        ret_val = self._add_screenshots_to_vault(action_result, screenshots_zip_file, analysis_id)
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
+
+        self.save_progress("Finished")
+
+        return action_result.set_status(phantom.APP_SUCCESS)
+
     def handle_action(self, param: Dict[str, Any]) -> bool:
         ret_val = phantom.APP_SUCCESS
 
@@ -1000,5 +1091,7 @@ class VMRayConnector(BaseConnector):
             ret_val = self._handle_get_report(param)
         elif action_id == ACTION_ID_VMRAY_GET_INFO:
             ret_val = self._handle_get_info(param)
+        elif action_id == ACTION_ID_VMRAY_GET_SCREENSHOTS:
+            ret_val = self._handle_get_screenshots(param)
 
         return ret_val

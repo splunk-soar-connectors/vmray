@@ -1,11 +1,13 @@
 # File: rest_cmds.py
 #
-# Copyright (c) VMRay GmbH 2017-2023
+# Copyright (c) VMRay GmbH 2017-2025
 #
 # Licensed under Apache 2.0 (https://www.apache.org/licenses/LICENSE-2.0.txt)
 import json
 from argparse import FileType
-from typing import Any, BinaryIO, Dict, Iterator, List, Optional, Union
+from collections.abc import Iterator
+from typing import Any, BinaryIO, Optional, Union
+
 
 try:
     from rest_api import VMRayRESTAPI, VMRayRESTAPIError  # pylint: disable=import-error
@@ -13,7 +15,7 @@ except ModuleNotFoundError:
     from .rest_api import VMRayRESTAPI, VMRayRESTAPIError
 
 
-def remove_no_ioc_artifacts(report: Dict[str, Any]) -> Dict[str, Any]:
+def remove_no_ioc_artifacts(report: dict[str, Any]) -> dict[str, Any]:
     if "artifacts" not in report:
         return report
 
@@ -41,7 +43,7 @@ class UnicodeFileType(FileType):
         except UnicodeDecodeError:
             import ast  # pylint: disable=import-outside-toplevel
 
-            sanitized_str = str(ast.literal_eval("u{}".format(repr(string))))
+            sanitized_str = str(ast.literal_eval(f"u{string!r}"))
         return FileType.__call__(self, sanitized_str)
 
 
@@ -71,17 +73,13 @@ class VMRay(VMRayRESTAPI):
             else:
                 raise excpt
 
-    def has_at_least_version(
-        self, major: int, minor: int = 0, revision: int = 0
-    ) -> bool:
+    def has_at_least_version(self, major: int, minor: int = 0, revision: int = 0) -> bool:
         wanted_version = (major, minor, revision)
         cur_version = (self.version_major, self.version_minor, self.version_revision)
 
         return cur_version >= wanted_version
 
-    def get_analyses(
-        self, last_analysis_id: int = -1, limit: Optional[int] = None
-    ) -> Dict[str, Any]:
+    def get_analyses(self, last_analysis_id: int = -1, limit: Optional[int] = None) -> dict[str, Any]:
         if limit is None:
             limit = self.items_per_request
         params = {"_order": "asc"}
@@ -99,9 +97,7 @@ class VMRay(VMRayRESTAPI):
         data = self.call("GET", "/rest/analysis", params=params)
         return data
 
-    def get_submissions(
-        self, last_submission_id: int = -1, limit: Optional[int] = None
-    ) -> Dict[str, Any]:
+    def get_submissions(self, last_submission_id: int = -1, limit: Optional[int] = None) -> dict[str, Any]:
         if limit is None:
             limit = self.items_per_request
         params = {"_order": "asc"}
@@ -128,13 +124,11 @@ class VMRay(VMRayRESTAPI):
 
         return data
 
-    def get_submission(self, submission_id: int) -> Dict[str, Any]:
+    def get_submission(self, submission_id: int) -> dict[str, Any]:
         return self.call("GET", f"/rest/submission/{submission_id}")
 
-    def get_reputation_by_submission(self, submission_id: int) -> List[Dict[str, Any]]:
-        lookups = self.call(
-            "GET", f"/rest/reputation_lookup/submission/{submission_id}"
-        )
+    def get_reputation_by_submission(self, submission_id: int) -> list[dict[str, Any]]:
+        lookups = self.call("GET", f"/rest/reputation_lookup/submission/{submission_id}")
 
         for lookup in lookups:
             if "reputation_lookup_verdict" not in lookup:
@@ -146,19 +140,19 @@ class VMRay(VMRayRESTAPI):
 
         return lookups
 
-    def get_sample(self, sample_id: int) -> Dict[str, Any]:
+    def get_sample(self, sample_id: int) -> dict[str, Any]:
         return self.call("GET", f"/rest/sample/{sample_id}")
 
     def get_sample_file(self, sample_id: int) -> BinaryIO:
         return self.call("GET", f"/rest/sample/{sample_id}/file", raw_data=True)
 
-    def get_sample_by_md5(self, hsh: str) -> List[Dict[str, Any]]:
+    def get_sample_by_md5(self, hsh: str) -> list[dict[str, Any]]:
         return self.call("GET", f"/rest/sample/md5/{hsh}")
 
-    def get_sample_by_sha1(self, hsh: str) -> List[Dict[str, Any]]:
+    def get_sample_by_sha1(self, hsh: str) -> list[dict[str, Any]]:
         return self.call("GET", f"/rest/sample/sha1/{hsh}")
 
-    def get_sample_by_sha256(self, hsh: str) -> List[Dict[str, Any]]:
+    def get_sample_by_sha256(self, hsh: str) -> list[dict[str, Any]]:
         return self.call("GET", f"/rest/sample/sha256/{hsh}")
 
     def get_stix(self, analysis_id: int) -> BinaryIO:
@@ -188,7 +182,7 @@ class VMRay(VMRayRESTAPI):
     def get_summary_v2(self, analysis_id: int) -> BinaryIO:
         return self.get_file_from_archive(analysis_id, "logs/summary_v2.json")
 
-    def get_report(self, analysis_id: int, iocs_only: bool = True) -> Dict[str, Any]:
+    def get_report(self, analysis_id: int, iocs_only: bool = True) -> dict[str, Any]:
         try:
             report_v2 = self.get_summary_v2(analysis_id)
             summary_v2 = SummaryV2(json.load(report_v2))
@@ -237,41 +231,29 @@ class VMRay(VMRayRESTAPI):
         submission = self.get_submission(submission_id)
         return submission["submission_finished"]
 
-    def get_analyses_by_submission_id(self, submission_id: int) -> List[Dict[str, Any]]:
-        return self.call(
-            "GET", f"/rest/analysis?analysis_submission_id={submission_id}"
-        )
+    def get_analyses_by_submission_id(self, submission_id: int) -> list[dict[str, Any]]:
+        return self.call("GET", f"/rest/analysis?analysis_submission_id={submission_id}")
 
-    def get_child_submissions(self, submission_id: int) -> Optional[Dict[str, Any]]:
+    def get_child_submissions(self, submission_id: int) -> Optional[dict[str, Any]]:
         if not self.has_at_least_version(4, 2, 0):
             return None
 
-        child_submissions = self.call(
-            "GET", f"/rest/submission?submission_parent_submission_id={submission_id}"
-        )
+        child_submissions = self.call("GET", f"/rest/submission?submission_parent_submission_id={submission_id}")
 
-        child_submission_ids = [
-            {"child_submission_id": child["submission_id"]}
-            for child in child_submissions
-        ]
+        child_submission_ids = [{"child_submission_id": child["submission_id"]} for child in child_submissions]
 
         return {"child_submission_ids": child_submission_ids}
 
-    def get_recursive_samples(self, sample_id: int) -> Dict[str, Any]:
+    def get_recursive_samples(self, sample_id: int) -> dict[str, Any]:
         info = self.get_sample(sample_id)
 
         child_sample_ids = {}
         if "sample_child_sample_ids" in info:
-            child_sample_ids = [
-                {"child_sample_id": child} for child in info["sample_child_sample_ids"]
-            ]
+            child_sample_ids = [{"child_sample_id": child} for child in info["sample_child_sample_ids"]]
 
         parent_sample_ids = {}
         if "sample_parent_sample_ids" in info:
-            parent_sample_ids = [
-                {"parent_sample_id": parent}
-                for parent in info["sample_parent_sample_ids"]
-            ]
+            parent_sample_ids = [{"parent_sample_id": parent} for parent in info["sample_parent_sample_ids"]]
 
         recursive_sample_ids = {
             "parent_sample_ids": parent_sample_ids,
@@ -284,20 +266,18 @@ class VMRay(VMRayRESTAPI):
     def get_wrong_file(self, analysis_id: int) -> BinaryIO:
         return self.get_file_from_archive(analysis_id, "FILE/DOES_NOT_EXIST")
 
-    def submit_file(
-        self, filepath: str, params: Dict[str, Any] = None
-    ) -> Dict[str, Any]:
+    def submit_file(self, filepath: str, params: Optional[dict[str, Any]] = None) -> dict[str, Any]:
         with open(filepath, "rb") as fobj:
             _params = {"sample_file": fobj}
             _params.update(params)
             return self.call("POST", "/rest/sample/submit", params=_params)
 
-    def submit_url(self, url: str, params: Dict[str, Any] = None) -> Dict[str, Any]:
+    def submit_url(self, url: str, params: Optional[dict[str, Any]] = None) -> dict[str, Any]:
         _params = {"sample_url": url}
         _params.update(params)
         return self.call("POST", "/rest/sample/submit", params=_params)
 
-    def get_analysis_threat_indicators(self, analysis_id: str) -> Dict:
+    def get_analysis_threat_indicators(self, analysis_id: str) -> dict:
         """Get VTIs from an analysis.
 
         VTI = Threat indicator.
@@ -311,7 +291,7 @@ class VMRay(VMRayRESTAPI):
         suffix = f"/rest/analysis/{analysis_id}/vtis"
         return self.call("GET", suffix)
 
-    def get_sample_threat_indicators(self, sample_id: str) -> Dict:
+    def get_sample_threat_indicators(self, sample_id: str) -> dict:
         """Get VTIs from a sample.
 
         VTI = Threat indicator.
@@ -325,7 +305,7 @@ class VMRay(VMRayRESTAPI):
         suffix = f"/rest/sample/{sample_id}/threat_indicators"
         return self.call("GET", suffix)
 
-    def get_sample_iocs(self, sample_id: str, all_artifacts: bool = False) -> Dict:
+    def get_sample_iocs(self, sample_id: str, all_artifacts: bool = False) -> dict:
         """Get IOCs from a sample.
 
         Args:
@@ -346,13 +326,13 @@ class VMRayParsingError(Exception):
 
 
 class SummaryV2:
-    def __init__(self, report: Dict[str, Any]) -> None:
+    def __init__(self, report: dict[str, Any]) -> None:
         if "_type" not in report and report["_type"] != "summary":
             raise VMRayParsingError("Not a summary v2 file")
 
         self.report = report
 
-    def to_v1(self) -> Dict[str, Any]:
+    def to_v1(self) -> dict[str, Any]:
         report_v1 = {}
 
         artifacts = self._get_v1_artifacts()
@@ -397,9 +377,7 @@ class SummaryV2:
             return score
         return "n/a"
 
-    def _resolve_refs(
-        self, data: Union[List[Dict[str, Any]], Dict[str, Any]]
-    ) -> Iterator[Dict[str, Any]]:
+    def _resolve_refs(self, data: Union[list[dict[str, Any]], dict[str, Any]]) -> Iterator[dict[str, Any]]:
         if not data:
             return
 
@@ -409,7 +387,7 @@ class SummaryV2:
         for ref in data:
             yield self._resolve_ref(ref)
 
-    def _resolve_ref(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def _resolve_ref(self, data: dict[str, Any]) -> dict[str, Any]:
         if data == {}:
             return {}
 
@@ -425,7 +403,7 @@ class SummaryV2:
 
         return resolved_ref
 
-    def _get_v1_artifacts(self) -> Dict[str, Any]:
+    def _get_v1_artifacts(self) -> dict[str, Any]:
         if "artifacts" not in self.report:
             return {}
 
@@ -537,7 +515,7 @@ class SummaryV2:
 
         return v1_artifacts
 
-    def _get_v1_extracted_files(self) -> Dict[str, Any]:
+    def _get_v1_extracted_files(self) -> dict[str, Any]:
         if "extracted_files" not in self.report:
             return {}
 
@@ -568,7 +546,7 @@ class SummaryV2:
 
         return {"extracted_files": extracted_files}
 
-    def _get_v1_vtis(self) -> Dict[str, Any]:
+    def _get_v1_vtis(self) -> dict[str, Any]:
         if "matches" not in self.report["vti"]:
             return {}
 
@@ -591,7 +569,7 @@ class SummaryV2:
 
         return {"vti": {"vti_rule_matches": vti_rule_matches}}
 
-    def _get_v1_mitre_attack(self) -> Dict[str, Any]:
+    def _get_v1_mitre_attack(self) -> dict[str, Any]:
         if "mitre_attack" not in self.report:
             return {}
 

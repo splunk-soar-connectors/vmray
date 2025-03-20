@@ -1,10 +1,9 @@
 # File: rest_api.py
 #
-# Copyright (c) VMRay GmbH 2017-2023
+# Copyright (c) VMRay GmbH 2017-2025
 #
 # Licensed under Apache 2.0 (https://www.apache.org/licenses/LICENSE-2.0.txt)
 """Python client library for VMRay REST API"""
-
 
 import base64
 import datetime
@@ -14,6 +13,7 @@ import requests
 import six
 
 from vmray_version import __VERSION__
+
 
 try:
     import urlparse  # pylint: disable=vmray-wrong-import-order
@@ -52,7 +52,7 @@ def handle_rest_api_result(result):
             json_result = result.json()
         except ValueError:
             raise VMRayRESTAPIError(
-                "API returned error {}: {}".format(result.status_code, result.text),
+                f"API returned error {result.status_code}: {result.text}",
                 status_code=result.status_code,
             )
 
@@ -115,13 +115,11 @@ class VMRayRESTAPI:
                         byte_value = filename.encode("utf-8")
                         b64_value = base64.b64encode(byte_value).decode("utf-8")
 
-                        filename = "@param={}".format(b64_key)
+                        filename = f"@param={b64_key}"
                         req_params[b64_key] = b64_value
                     file_params[key] = (filename, value, "application/octet-stream")
                 else:
-                    raise VMRayRESTAPIError(
-                        'Parameter "{}" has unknown type "{}"'.format(key, type(value))
-                    )
+                    raise VMRayRESTAPIError(f'Parameter "{key}" has unknown type "{type(value)}"')
 
         # construct request
         if file_params:
@@ -137,7 +135,7 @@ class VMRayRESTAPI:
             req_data = None
 
         headers = {
-            "Authorization": "api_key {}".format(self.api_key),
+            "Authorization": f"api_key {self.api_key}",
             "User-Agent": f"Splunk SOAR/{__VERSION__}",
         }
 
@@ -162,7 +160,7 @@ class VMRayRESTAPI:
         try:
             json_result = result.json()
         except ValueError:
-            raise ValueError("API returned invalid JSON: {}".format(result.text))
+            raise ValueError(f"API returned invalid JSON: {result.text}")
 
         # if there are no cached elements then return the data
         if "continuation_id" not in json_result:
@@ -174,9 +172,7 @@ class VMRayRESTAPI:
         while "continuation_id" in json_result:
             # send request to server
             result = requests.get(
-                "{}/rest/continuation/{}".format(
-                    self.server, json_result["continuation_id"]
-                ),
+                "{}/rest/continuation/{}".format(self.server, json_result["continuation_id"]),
                 headers=headers,
                 verify=self.verify_cert,
                 timeout=30,
@@ -187,7 +183,7 @@ class VMRayRESTAPI:
             try:
                 json_result = result.json()
             except ValueError:
-                raise ValueError("API returned invalid JSON: {}".format(result.text))
+                raise ValueError(f"API returned invalid JSON: {result.text}")
 
             data.extend(json_result["data"])
 

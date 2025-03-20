@@ -1,6 +1,6 @@
 # File: test_get_iocs.py
 #
-# Copyright (c) VMRay GmbH 2017-2023
+# Copyright (c) VMRay GmbH 2017-2025
 #
 # Licensed under Apache 2.0 (https://www.apache.org/licenses/LICENSE-2.0.txt)
 import pytest
@@ -27,7 +27,7 @@ from vmray_consts import VMRAY_ERROR_IOCS_NOT_FINISHED
             2,
             id="Getting IOCs was successful.",
         ),
-    ]
+    ],
 )
 def test_iocs_finished_within_timeout(mocker, last_status, expected, api_call_count, send_progress_call_count):
     sample_id = "87"
@@ -62,7 +62,7 @@ def test_iocs_finished_within_timeout(mocker, last_status, expected, api_call_co
     assert result == expected
 
     assert api_mock.get_sample_iocs.call_count == api_call_count
-    calls = [mocker.call(sample_id)]*api_call_count
+    calls = [mocker.call(sample_id)] * api_call_count
     api_mock.get_sample_iocs.assert_has_calls(calls)
     assert vmray_connector.send_progress.call_count == send_progress_call_count
     calls = [
@@ -86,7 +86,7 @@ def test_iocs_finished_within_timeout(mocker, last_status, expected, api_call_co
             False,
             id="Sample IOCS are ready.",
         ),
-    ]
+    ],
 )
 def test_get_iocs(mocker, timed_out):
     sample_id = "87"

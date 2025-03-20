@@ -1,6 +1,6 @@
 # File: vmray_consts.py
 #
-# Copyright (c) VMRay GmbH 2017-2023
+# Copyright (c) VMRay GmbH 2017-2025
 #
 # Licensed under Apache 2.0 (https://www.apache.org/licenses/LICENSE-2.0.txt)
 VMRAY_JSON_SERVER = "vmray_server"
@@ -30,9 +30,7 @@ VMRAY_ERROR_MSG_UNAVAILABLE = "Error message unavailable. Please check the asset
 VMRAY_PARSE_ERROR_MSG = "Unable to parse the error message. Please check the asset configuration and|or action parameters"
 VMRAY_ERROR_SERVER_RES = "Error processing server response. {}"
 VMRAY_INVALID_INTEGER_ERROR_MSG = "Please provide a valid integer value in the {}"
-VMRAY_NEGATIVE_INTEGER_ERROR_MSG = (
-    "Please provide a valid non-negative integer value in the {}"
-)
+VMRAY_NEGATIVE_INTEGER_ERROR_MSG = "Please provide a valid non-negative integer value in the {}"
 VMRAY_ERROR_DOWNLOAD_FAILED = "Download of the files failed"
 VMRAY_ERROR_EXTRACTING_SCREENSHOTS = "Extracting screenshots failed"
 

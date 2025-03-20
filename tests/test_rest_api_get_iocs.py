@@ -1,6 +1,6 @@
 # File: test_rest_api_get_iocs.py
 #
-# Copyright (c) VMRay GmbH 2017-2023
+# Copyright (c) VMRay GmbH 2017-2025
 #
 # Licensed under Apache 2.0 (https://www.apache.org/licenses/LICENSE-2.0.txt)
 import pytest
@@ -22,7 +22,7 @@ from tests.data_for_testing import SAMPLE_IOCS_REST_API_RESULT
             "",
             id="Excluding 'all_artifacts'.",
         ),
-    ]
+    ],
 )
 def test_get_sample_iocs(mocker, all_artifacts, expected_query_str):
     sample_id = "87"

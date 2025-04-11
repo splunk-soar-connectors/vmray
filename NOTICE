@@ -1,19 +1,2 @@
-Splunk SOAR VMRay
-Copyright (c) VMRay GmbH 2017-2023
-
-Third-party Software Attributions:
-
-Library: requests
-Version: 2.25.0
-License: Apache 2.0
-Kenneth Reitz
-
-Library: six
-Version: 1.15.0
-License: MIT
-Copyright 2010-2020 Benjamin Peterson
-
-Library: urllib3
-Version: 1.26.7
-License: MIT
-Copyright 2008-2020 Andrey Petrov and contributors
+Splunk SOAR App: VMRay
+Copyright (c) VMRay GmbH 2017-2025

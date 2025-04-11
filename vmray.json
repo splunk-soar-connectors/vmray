@@ -2186,13 +2186,5 @@
             "versions": "EQ(*)"
         }
     ],
-    "pip_dependencies": {
-        "wheel": [
-            {
-                "module": "six",
-                "input_file": "wheels/shared/six-1.15.0-py2.py3-none-any.whl"
-            }
-        ]
-    },
     "utctime_updated": "2022-01-07T22:06:07.000000Z"
 }

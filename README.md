@@ -1,7 +1,7 @@
 # VMRay
 
 Publisher: VMRay \
-Connector Version: 2.6.0 \
+Connector Version: 2.6.1 \
 Product Vendor: VMRay GmbH \
 Product Name: VMRay Platform \
 Minimum Product Version: 5.5.0

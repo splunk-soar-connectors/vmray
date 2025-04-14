@@ -12,7 +12,7 @@
     "type": "sandbox",
     "license": "Copyright (c) VMRay GmbH 2017-2025",
     "main_module": "vmray_connector.py",
-    "app_version": "2.6.0",
+    "app_version": "2.6.1",
     "min_phantom_version": "5.5.0",
     "fips_compliant": false,
     "product_vendor": "VMRay GmbH",
@@ -2186,5 +2186,5 @@
             "versions": "EQ(*)"
         }
     ],
-    "utctime_updated": "2022-01-07T22:06:07.000000Z"
+    "utctime_updated": "2025-04-14T18:57:25.057581Z"
 }

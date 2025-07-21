@@ -18,7 +18,7 @@
     "product_vendor": "VMRay GmbH",
     "product_name": "VMRay Platform",
     "product_version_regex": ".*",
-    "python_version": "3",
+    "python_version": ["3.9", "3.13"],
     "logo": "logo_vmray.svg",
     "logo_dark": "logo_vmray_dark.svg",
     "configuration": {

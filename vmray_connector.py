@@ -1,6 +1,6 @@
 # File: vmray_connector.py
 #
-# Copyright (c) VMRay GmbH 2017-2025
+# Copyright (c) VMRay GmbH 2017-2026
 #
 # Licensed under Apache 2.0 (https://www.apache.org/licenses/LICENSE-2.0.txt)
 import base64
@@ -19,6 +19,7 @@ from phantom.vault import Vault
 
 from rest_api import VMRayRESTAPIError  # pylint: disable=wrong-import-order, import-error
 from rest_cmds import SummaryV2, VMRay  # pylint: disable=wrong-import-order
+from vmary_utils import ScreenshotLogEntry  # pylint: disable=wrong-import-order
 from vmray_consts import (
     ACTION_ID_VMRAY_DETONATE_FILE,
     ACTION_ID_VMRAY_DETONATE_URL,  # pylint: disable=wrong-import-order
@@ -62,7 +63,6 @@ from vmray_consts import (
     VMRAY_PARSE_ERROR_MSG,
     VMRAY_SUCC_CONNECTIVITY_TEST,
 )
-from vmary_utils import ScreenshotLogEntry  # pylint: disable=wrong-import-order
 
 
 # pylint: enable=import-error

@@ -1,6 +1,6 @@
 # File: vmray_connector.py
 #
-# Copyright (c) VMRay GmbH 2017-2025
+# Copyright (c) VMRay GmbH 2017-2026
 #
 # Licensed under Apache 2.0 (https://www.apache.org/licenses/LICENSE-2.0.txt)
 import base64
@@ -19,6 +19,7 @@ from phantom.vault import Vault
 
 from rest_api import VMRayRESTAPIError  # pylint: disable=wrong-import-order, import-error
 from rest_cmds import SummaryV2, VMRay  # pylint: disable=wrong-import-order
+from vmary_utils import ScreenshotLogEntry  # pylint: disable=wrong-import-order
 from vmray_consts import (
     ACTION_ID_VMRAY_DETONATE_FILE,
     ACTION_ID_VMRAY_DETONATE_URL,  # pylint: disable=wrong-import-order
@@ -29,8 +30,6 @@ from vmray_consts import (
     ACTION_ID_VMRAY_GET_SCREENSHOTS,
     ACTION_ID_VMRAY_GET_VTIS,
     DEFAULT_TIMEOUT,
-    INDEX_LOG_DELIMITER,
-    INDEX_LOG_FILE_NAME_POSITION,
     SAMPLE_TYPE_MAPPING,
     VMRAY_DEFAULT_PASSWORD,
     VMRAY_ERROR_ADD_VAULT,
@@ -912,8 +911,11 @@ class VMRayConnector(BaseConnector):
         try:
             with archive.open("screenshots/index.log") as index_log:
                 for line in io.TextIOWrapper(index_log, "utf-8"):
-                    file_name = line.split(INDEX_LOG_DELIMITER)[INDEX_LOG_FILE_NAME_POSITION].strip()
-                    ordered_screenshots.append(file_name)
+                    log_entry = ScreenshotLogEntry.parse(line)
+                    if log_entry.sha256 in ordered_screenshots:
+                        continue
+
+                    ordered_screenshots.append(log_entry.filename)
         except Exception as exc:
             error_message = self._get_error_message_from_exception(exc)
             return (action_result.set_status(phantom.APP_ERROR, f"{VMRAY_ERROR_EXTRACTING_SCREENSHOTS}. {error_message}"), None)
